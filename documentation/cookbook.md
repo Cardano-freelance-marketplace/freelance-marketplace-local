@@ -1,15 +1,35 @@
-### Deployment & Infrastructure
-
-- **Frontend Hosting:** TBD
-- **Backend Hosting:** TBD
-- **Smart Contracts:** Deployed on Cardano Testnet → Mainnet
-
 ## **Setup Guide**
 
 ### **Prerequisites**
 Ensure you have the following installed:
 
 ```sh
+# Dependencies 
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg lsb-release
+
+
+# Install Docker && Docker compose 
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.gpg > /dev/null
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo docker --version
+
+## Test docker
+docker run hello-world
+
+
 # Install Node.js & npm
 sudo apt update && sudo apt install nodejs npm -y
 
@@ -20,26 +40,34 @@ curl -sSL https://install.python-poetry.org | python3 -
 # Install Git
 sudo apt install git -y
 ```
+## Git clone all repositories
+Clone the repositories so your folder looks like this : 
+
+├── freelance-marketplace-be
+
+├── freelance-marketplace-fe
+
+├── freelance-marketplace-local
+
+├── freelance-marketplace-sc
+
+└── ogmios
+
 
 ### **Backend (FastAPI with Poetry)**
 
 ```sh
-# Clone the repository
-git clone https://github.com/yourusername/cardano-marketplace.git
-cd cardano-marketplace/backend
-
 # Install dependencies
 poetry install
 
 # Run the FastAPI server
-poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+sudo chmod +x start_dev.sh
+./start_dev.sh
 ```
 
 ### **Frontend (React with TypeScript)**
 
 ```sh
-cd ../frontend
-
 # Install dependencies
 npm install
 
@@ -58,11 +86,6 @@ curl --proto '=https' --tlsv1.2 -LsSf https://install.aiken-lang.org | sh
 # Verify installation
 aiken --version
 
-# Initialize the Aiken project
-cd ../smart-contracts
-aiken new marketplace-contract
-cd marketplace-contract
-
 # Build the contract
 aiken build
 
@@ -71,19 +94,28 @@ aiken check
 ```
 ### **Cardano Node**
 
-Clone Ogmios repository
 ```sh
+#Clone Ogmios repository
 git clone git@github.com:CardanoSolutions/ogmios.git
-```
 
-Get the cardano node file configs from : 
+#Get the cardano node file configs from : 
 
 https://developers.cardano.org/docs/get-started/cardano-node/running-cardano
 
-Into /server/config/network/preview/cardano-node
-
-```sh
-NETWORK=preview docker compose up -d
+#Into /server/config/network/preview/cardano-node
 ```
 
----
+### **Databases and Docker**
+```sh 
+#RUN 
+./start_local_env.sh
+
+#inside freelance-marketplace-local repository to initialize :
+  - MongoDB database
+  - PostgresSQL database
+  - Cardano-node
+  - Ogmios
+
+#IF YOU HAVE PERMISSIONS ISSUES RUNNING THE SCRIPTS RUN 
+sudo chmod +x start_local_env.sh
+```
