@@ -144,91 +144,90 @@ Example
 ### Endpoints
 
 #### Users
- - GET **/user** Query(id: int) - GET SINGLE USER
- - GET **/users** - GET ALL USERS
- - GET **/users/job** Query(job_id: int) - GET ALL USERS by job
- - DELETE **/user** Query(id: int) - SOFT DELETE SINGLE USER BY ID
- - POST **/user** FORM(user_data: dict) - CREATE USER WITH DATA
- - PATCH **/user** FORM(id: int, user_data: dict) - EDIT USER WITH DATA
+ - GET **/user** Query(user_id: int) -> User - GET SINGLE USER
+ - GET **/users** -> List[User] - GET ALL USERS
+ - GET **/users/job** Query(job_id: int) -> List[User] - GET ALL USERS by job
+ - DELETE **/user** Query(user_id: int) -> Bool - SOFT DELETE SINGLE USER BY ID
+ - POST **/user** FORM(user_data: dict) -> Bool - CREATE USER WITH DATA
+ - PATCH **/user** FORM(user_id: int, user_data: dict) -> Bool - EDIT USER WITH DATA
 
 ##### onDelete
  SOFT CascadeOnDelete ( Profiles, Portfolios)
 
 #### User Roles
- - GET **/user/role** Query(id: int) - GET ROLE OF USER
- - GET **/roles** - GET ALL Roles
+ - GET **/user/role** Query(user_id: int) -> Role - GET ROLE OF USER
+ - GET **/roles** -> List[Role] - GET ALL Roles
 
 #### Profiles
- - GET **/user/profile** Query(id: int) - GET SINGLE USER PROFILE
- - GET **/users/profiles** - GET ALL USERS PROFILES
- - POST **/user/profile** FORM(id: int, user_profile: dict) - CREATE PROFILE FOR SPECIFIC USER
- - PATCH **/user/profile** FORM(id: int, user_profile: dict) - EDIT PROFILE OF USER SPECIFIED
- - DELETE **/user/profile** Query(id: int) - DELETE SINGLE Profile BY user id
+ - GET **/user/profile** Query(user_id: int) -> Profile - GET SINGLE USER PROFILE
+ - POST **/user/profile** FORM(user_id: int, user_profile: dict) -> Bool - CREATE PROFILE FOR SPECIFIC USER
+ - PATCH **/user/profile** FORM(user_id: int, user_profile: dict) -> Bool - EDIT PROFILE OF USER SPECIFIED
+ - DELETE **/user/profile** Query(user_id: int) -> Bool - DELETE SINGLE Profile BY user id
 
  #### Portfolios
- - GET **/user/portfolio** Query(id: int) - GET SINGLE USER portfolio
- - POST **/user/portfolio** FORM(id: int, user_portfolio: dict) - CREATE portfolio FOR SPECIFIC USER
- - PATCH **/user/portfolio** FORM(id: int, user_portfolio: dict) - EDIT portfolio OF USER SPECIFIED
- - DELETE **/user/portfolio** Query(id: int) - DELETE SINGLE Portfolio BY user id
+ - GET **/user/portfolio** Query(user_id: int) -> Portfolio - GET SINGLE USER portfolio
+ - POST **/user/portfolio** FORM(user_id: int, user_portfolio: dict) -> Bool - CREATE portfolio FOR SPECIFIC USER
+ - PATCH **/user/portfolio** FORM(user_id: int, user_portfolio: dict) -> Bool - EDIT portfolio OF USER SPECIFIED
+ - DELETE **/user/portfolio** Query(user_id: int) -> Bool - DELETE SINGLE Portfolio BY user id
 
 #### Reviews
- - GET **/user/review** Query(review_id: int) - GET SINGLE USER review
- - GET **/user/reviews** Query(user_id: int) - GET ALL Reviews by User
- - POST **/user/review** FORM(user_id: int, review_data: dict) - CREATE review FOR SPECIFIC USER
- - PATCH **/user/review** FORM(user_id: int, review_data: dict) - EDIT review OF USER SPECIFIED
- - DELETE **/user/review** Query(review_id: int) - DELETE SINGLE Review BY ID
+ - GET **/user/review** Query(review_id: int) -> Review - GET SINGLE review
+ - GET **/user/reviews** Query(user_id: int) -> List[Review] - GET ALL Reviews by User
+ - POST **/user/review** FORM(user_id: int, review_data: dict) -> Bool - CREATE review FOR SPECIFIC USER
+ - PATCH **/user/review** FORM(user_id: int, review_data: dict) -> Bool - EDIT review OF USER SPECIFIED
+ - DELETE **/user/review** Query(review_id: int) -> Bool - DELETE SINGLE Review BY ID
 
 #### Jobs
- - GET **/job** Query(id: int) - GET SINGLE JOB
- - GET **/jobs** - GET ALL JOBS
- - GET **/jobs/user** Query(id: int) - GET ALL JOBS RELATED TO A USER
- - GET **/category/jobs** Query(category_id: int) - GET ALL jobs related to category
- - DELETE **/job** Query(id: int) - DELETE SINGLE JOB BY ID
- - POST **/job** FORM(job_data) - CREATE JOB WITH DATA
- - PATCH **/job** FORM(id: int, job_data)
+ - GET **/job** Query(job_id: int) -> Job - GET SINGLE JOB
+ - GET **/jobs** -> List[Jobs] - GET ALL JOBS
+ - GET **/jobs/user** Query(user_id: int) -> List[Jobs] - GET ALL JOBS RELATED TO A USER
+ - GET **/category/jobs** Query(category_id: int) -> List[Jobs] - GET ALL jobs related to category
+ - DELETE **/job** Query(job_id: int) -> Bool - DELETE SINGLE JOB BY ID
+ - POST **/job** FORM(job_id: id, job_data: dict) -> Bool - CREATE JOB WITH DATA
+ - PATCH **/job** FORM(job_id: int, job_data: dict) -> Bool - Update job by job_id
 
  ##### onDelete
  SOFT CascadeOnDelete ( Proposals )
 
 #### Proposals
- - GET **/job/proposal** Query(job_id: int, proposal_id: int) - GET SINGLE proposal FROM Specific Job
- - GET **/job/proposals** Query(job_id: int) - GET ALL proposals from specific JOB
- - DELETE **/job/proposal** Query(job_id: int, proposal_id: int) - SOFT DELETE SINGLE proposal BY ID
- - POST **/job/proposal** FORM(job_id: int, proposal_id: int, proposal_data: dict) - CREATE proposal WITH DATA
- - PATCH **/job/proposal** FORM(job_id: int, proposal_id: int, proposal_data: dict) - EDIT proposal WITH DATA
+ - GET **/job/proposal** Query(job_id: int, proposal_id: int) -> Proposal - GET SINGLE proposal FROM Specific Job
+ - GET **/job/proposals** Query(job_id: int) -> List[Proposals] - GET ALL proposals from specific JOB
+ - DELETE **/job/proposal** Query(proposal_id: int) -> Bool - SOFT DELETE SINGLE proposal BY ID
+ - POST **/job/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - CREATE proposal WITH DATA
+ - PATCH **/job/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - EDIT proposal WITH DATA
 
 #### Transactions
- - GET **/transaction** Query(id: int) - GET SINGLE transaction
- - GET **/job/transaction** Query(job_id: int, transacton_id: int) - GET SINGLE transaction By Job
- - GET **/job/transactions** Query(job_id: int) - GET ALL transactions by job
- - DELETE **/job/transaction** Query(job_id: int, transaction: int) - DELETE SINGLE transaction BY job and transaction ID
- - POST **/job/transaction** FORM(job_id: int, transaction_id: int, transaction_data: dict) - CREATE transaction WITH DATA
- - PATCH **/job/transaction** FORM(job_id: int, transaction_id: int, transaction_data: dict) - EDIT transaction WITH DATA
+ - GET **/transaction** Query(id: int) -> Transaction - GET SINGLE transaction 
+ - GET **/proposal/transaction** Query(proposal_id: int) -> Transaction - GET Transaction By Proposal_id
+ - GET **/job/transactions** Query(job_id: int) -> List[Transactions] - GET ALL transactions by job
+ - DELETE **/job/transaction** Query(transaction_id: int) -> Bool - DELETE SINGLE transaction BY transaction ID
+ - POST **/job/transaction** FORM(job_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA by job_id
+ - PATCH **/job/transaction** FORM(job_id: int, transaction_data: dict) -> Bool - EDIT transaction WITH DATA
 
 #### Messages
- - GET **/message** Query(id: int) - GET SINGLE message by id
- - GET **/messages/author** Query(author_id: int) - GET all messages by author 
- - GET **/messages/recipient** Query(recipient_id: int) - GET all messages by recipient
- - GET **/messages/conversation/** Query(recipient_id: int, author_id) - GET all messages between two users
- - GET **/job/messages/author** Query(job_id: int, author_id: int) - GET all messages from job by author_id
- - GET **/job/messages** Query(job_id: int) - GET ALL messages by job
- - DELETE **/message** Query(message_id: int) - DELETE SINGLE message by message ID
- - POST **/message** FORM(author_id: int, message_data: dict) - CREATE message WITH DATA
- - PATCH **/message** FORM(message_id: int, message_data: dict) - EDIT message WITH DATA
+ - GET **/message** Query(message_id: int) -> Message - GET SINGLE message by id
+ - GET **/messages/author** Query(author_id: int) -> List[Message] - GET all messages by author 
+ - GET **/messages/recipient** Query(recipient_id: int) -> List[Message] - GET all messages by recipient
+ - GET **/messages/conversation/** Query(recipient_id: int, author_id) List[Message] - GET all messages between two users
+ - GET **/job/messages/author** Query(job_id: int, author_id: int) -> List[Message] - GET all messages from job by author_id
+ - GET **/job/messages** Query(job_id: int) -> List[Message] - GET ALL messages by job
+ - DELETE **/message** Query(message_id: int) -> Bool - DELETE SINGLE message by message ID
+ - POST **/message** FORM(author_id: int, message_data: dict) -> Bool - CREATE message WITH DATA
+ - PATCH **/message** FORM(message_id: int, message_data: dict) -> Bool - EDIT message WITH DATA
 
 #### Categories
- - GET **/category** Query(category_id: int) - GET SINGLE category
- - GET **/categories** Query(category_id: int) - GET ALL categories
- - DELETE **/category** Query(category_id: int) - DELETE SINGLE category BY ID
- - POST **/category** FORM(category_id: int, category_data: dict) - CREATE category WITH DATA
- - PATCH **/category** FORM(category_id: int, category_data: dict) - EDIT category WITH DATA
+ - GET **/category** Query(category_id: int) -> Category - GET SINGLE category
+ - GET **/categories** Query(category_id: int) -> List[Category] - GET ALL categories
+ - DELETE **/category** Query(category_id: int) -> Bool - DELETE SINGLE category BY ID
+ - POST **/category** FORM(category_id: int, category_data: dict) -> Bool - CREATE category WITH DATA
+ - PATCH **/category** FORM(category_id: int, category_data: dict) -> Bool - EDIT category WITH DATA
 
  #### Notifications
- - GET **/notification** Query(notification_id: int) - GET SINGLE notification
- - GET **/user/notifications** Query(user_id: int) - GET ALL notifications by User id
- - POST **/user/notification** FORM(user_id: int, notification_data: dict) - CREATE notification WITH DATA By user id
- - PATCH **/notification** FORM(notification_id: int, notification_data: dict) - EDIT notification WITH DATA by notification_id
- - DELETE **/notification** Query(notification_id: int) - DELETE SINGLE notification BY ID
+ - GET **/notification** Query(notification_id: int) -> Notification - GET SINGLE notification
+ - GET **/user/notifications** Query(user_id: int) -> List[Notification] - GET ALL notifications by User id
+ - POST **/user/notification** FORM(user_id: int, notification_data: dict) -> Bool - CREATE notification WITH DATA By user id
+ - PATCH **/notification** FORM(notification_id: int, notification_data: dict) -> Bool - EDIT notification WITH DATA by notification_id
+ - DELETE **/notification** Query(notification_id: int) -> Bool - DELETE SINGLE notification BY ID
 
 
 ## Frontend
