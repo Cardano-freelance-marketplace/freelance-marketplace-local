@@ -15,15 +15,20 @@
 
 #### Relationships and Permissions:
 
-- **User and Roles**: Establish a many-to-many relationship between users and roles to allow flexibility in role assignments.​
+- **User and Roles**: One Role has many users and one user can only have one role
 
 - **Job and Proposal**: Implement a one-to-many relationship where each job can have multiple proposals.​
 
-- **USERS and Jobs**: Set up a one-to-many relationship where a client can post multiple jobs.​
+- **USERS and Jobs**: Set up a one-to-many relationship where a user can post multiple jobs.​
 
 - **Jobs and Transactions**: Set up a one-to-many relationship where a Job can have multiple transactions.​
 
-- **categories**: Organizes themes like 'software development' and services into various sub-categories for easy navigation.​
+- **categories and sub-categories**: One-to-many relationship where one category can have multiple sub-categories
+
+- **Jobs and sub-categories**: One-to-many relationship where one sub-category can have multiple jobs
+
+- **reviews and users**: one-to-many relationship where one user can review multiple users, and one user can be reviewed by multiple users.
+
 
 ### NoSQL Database Collections
 
@@ -34,13 +39,6 @@
 - **notifications**: Manages system alerts and notifications for user activities.
 
 - **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of jobs.​
-
-# Roles
-
-###  User Roles
-- Admin
-- User
-- Guest
 
 
 ## Table Schemas
@@ -92,6 +90,8 @@
  ```sql
   proposal_id(INT, PRIMARY KEY),
   job_id(INT, NOT NULL, FOREIGN KEY),
+  proposal_tx_hash(VARCHAR(100), ) // THIS IS THE 'ID' OF THE UTXO INSIDE THE SMART CONTRACT, UTXO''s in this case are like items in a list, that list contains the approval status of the freelancer and the client.
+  Grab this UTXO reference from the blockchain transaction response
   client_id(INT, FOREIGN KEY, NOT NULL),
   freelancer_id(INT, FOREIGN KEY, NOT NULL),
   proposal_text(TEXT, NOT NULL),
@@ -187,6 +187,13 @@
   creation_date: datetime
   was_notified: boolean
   ```
+
+# Roles
+
+###  User Roles
+- Admin
+- User
+- Guest
 
 
 ## **Role-Based Access Control (RBAC)**: 
@@ -338,6 +345,7 @@ Example
  - DELETE **/job** Query(job_id: int) -> Bool - DELETE SINGLE JOB BY ID
  - POST **/job** FORM(job_id: id, job_data: dict) -> Bool - CREATE JOB WITH DATA
  - PATCH **/job** FORM(job_id: int, job_data: dict) -> Bool - Update job by job_id
+ - PATCH **/job/cancel** FORM(job_id: int, user_id: int) -> Bool - Update job by job_id
 ```
  ##### onDelete
  SOFT CascadeOnDelete ( Proposals )
@@ -348,6 +356,7 @@ Example
  - GET **/job/proposals** Query(job_id: int) -> List[Proposals] - GET ALL proposals from specific JOB
  - DELETE **/job/proposal** Query(proposal_id: int) -> Bool - SOFT DELETE SINGLE proposal BY ID
  - POST **/job/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - CREATE proposal WITH DATA
+ - PATCH **/job/proposal/approve** FORM(job_id: int, user_id: int) -> Bool - Approve proposal STATUS
  - PATCH **/job/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - EDIT proposal WITH DATA
 ```
 #### Transactions
@@ -387,6 +396,7 @@ Example
  - PATCH **/notification** FORM(notification_id: int, notification_data: dict) -> Bool - EDIT notification WITH DATA by notification_id
  - DELETE **/notification** Query(notification_id: int) -> Bool - DELETE SINGLE notification BY ID
 ```
+
 
 
 
