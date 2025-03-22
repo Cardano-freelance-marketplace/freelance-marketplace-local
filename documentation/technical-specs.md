@@ -23,9 +23,9 @@
 
 - **Jobs and Transactions**: Set up a one-to-many relationship where a Job can have multiple transactions.​
 
-### NoSQL Database Collections
-
 - **categories**: Organizes themes like 'software development' and services into various sub-categories for easy navigation.​
+
+### NoSQL Database Collections
 
 - **portfolios**: Contains detailed information about previous works of freelancer
 
@@ -41,6 +41,152 @@
 - Admin
 - User
 - Guest
+
+
+## Table Schemas
+### SQL
+  #### Users
+  ```sql
+  id(Integer, Primary),
+  creation_date(Datetime),
+  updated_at(Datetime),
+  is_activate(boolean),
+  role_id(INT, NOT NULL, FOREIGN KEY),
+  wallet_public_address(varchar(100), UNIQUE, NOT NULL),
+  wallet_type(Varchar(50), NOT NULL)
+  last_login(datetime),
+  ```
+
+  #### Roles
+  ```sql
+  role_id(INT, Primary)
+  role_name(VARCHAR(50), NOT NULL, UNIQUE)
+  role_description(TEXT) 
+  ```
+
+  #### Profiles
+  ```sql
+  profile_id(INT, PRIMARY KEY)
+  user_id(INT, NOT NULL, FOREIGN KEY),
+  first_name(VARCHAR(50)),
+  last_name(VARCHAR(50)),
+  bio(text),
+  location(varchar(100)),
+  profile_picture(varchar(255)),
+  contact_number(20)
+  ```
+
+ #### Jobs
+ ```sql
+  job_id(INT, PRIMARY),
+  title(varchar(50)),
+  description(TEXT),
+  sub_category_id(INT, FOREIGN KEY)
+  client_id(int, NOT NULL, FOREIGN KEY),
+  created_at(TIMESTAMP),
+  updated_at(TIMESTAMP),
+  status(VARCHAR(50))
+ ```
+
+ #### Proposals
+ ```sql
+  proposal_id(INT, PRIMARY KEY),
+  job_id(INT, NOT NULL, FOREIGN KEY),
+  client_id(INT, FOREIGN KEY, NOT NULL),
+  freelancer_id(INT, FOREIGN KEY, NOT NULL),
+  proposal_text(TEXT, NOT NULL),
+  reward_amount(FLOAT, NOT NULL),
+  created_at(TIMESTAMP, NOT NULL),
+  client_approved(Boolean),
+  freelancer_approved(Boolean),
+  is_finished(Boolean),
+ ```
+
+  #### Transactions
+  ```sql
+  transaction_id(INT, PRIMARY KEY),
+  proposal_id(INT, FOREIGN KEY, NOT NULL),
+  amount(DECIMAL(10,2), NOT NULL)
+  token_name(VARCHAR(50))
+  receiver_address(TEXT)
+  client_id(INT, FOREIGN KEY, NOT NULL)
+  freelancer_id(INT, FOREIGN KEY, NOT NULL)
+  ```
+
+  #### Categories
+  ```sql
+  category_id(INT, PRIMARY KEY),
+  category_name(varchar(50), NOT NULL),
+  category_description(TEXT)
+  ```
+
+  #### Sub-Categories
+  ```sql
+  sub_category_id(INT, PRIMARY KEY),
+  category_id(INT, FOREIGN KEY, NOT NULL),
+  sub_category_name(VARCHAR(50), NOT NULL),
+  sub_category_description(TEXT)
+  ```
+
+  #### Reviews
+  ```sql
+  review_id(INT, PRIMARY KEY)
+  reviewee_id(INT, FOREIGN KEY, NOT NULL) // PERSON BEING REVIEWED
+  reviewer_id(INT, FOREIGN KEY, NOT NULL)
+  rating(decimal(2,1), NOT NULL CHECK(rating >= 1.0 AND rating <= 5.0))
+  comment(TEXT)
+  created_at(datetime)
+  ```
+
+  ### NoSQL
+
+  #### Portfolios
+  ```
+    user_id: int
+    portfolio_id: int
+    project_title: string
+    description: string
+    start_date: datetime
+    completion_date: datetime
+    tech_stack: List[str]
+    attachments: [
+      {
+          "file_name": str,
+          "file_type": str,
+          "file_data": str
+      }
+    ]
+    images : [
+      {
+        image_name: str
+        file_type: str
+        file_data: binary_data (str)
+      }
+    ]
+  ```
+
+
+
+  #### Messages
+  ```
+  message_id: int
+  sender_id: int
+  receiver_id: int
+  content: int
+  sent_time: datetime
+  received_time: datetime
+  was_edited: boolean
+  was_viewed: boolean
+  ```
+
+  #### Notifications
+  ```
+  notification_id: int
+  user_id: int
+  content: str
+  creation_date: datetime
+  was_notified: boolean
+  ```
 
 
 ## **Role-Based Access Control (RBAC)**: 
@@ -144,40 +290,47 @@ Example
 ### Endpoints
 
 #### Users
+```
  - GET **/user** Query(user_id: int) -> User - GET SINGLE USER
  - GET **/users** -> List[User] - GET ALL USERS
  - GET **/users/job** Query(job_id: int) -> List[User] - GET ALL USERS by job
  - DELETE **/user** Query(user_id: int) -> Bool - SOFT DELETE SINGLE USER BY ID
  - POST **/user** FORM(user_data: dict) -> Bool - CREATE USER WITH DATA
  - PATCH **/user** FORM(user_id: int, user_data: dict) -> Bool - EDIT USER WITH DATA
+ ```
 
 ##### onDelete
  SOFT CascadeOnDelete ( Profiles, Portfolios)
 
 #### User Roles
+```
  - GET **/user/role** Query(user_id: int) -> Role - GET ROLE OF USER
  - GET **/roles** -> List[Role] - GET ALL Roles
-
+```
 #### Profiles
+```
  - GET **/user/profile** Query(user_id: int) -> Profile - GET SINGLE USER PROFILE
  - POST **/user/profile** FORM(user_id: int, user_profile: dict) -> Bool - CREATE PROFILE FOR SPECIFIC USER
  - PATCH **/user/profile** FORM(user_id: int, user_profile: dict) -> Bool - EDIT PROFILE OF USER SPECIFIED
  - DELETE **/user/profile** Query(user_id: int) -> Bool - DELETE SINGLE Profile BY user id
-
+```
  #### Portfolios
+ ```
  - GET **/user/portfolio** Query(user_id: int) -> Portfolio - GET SINGLE USER portfolio
  - POST **/user/portfolio** FORM(user_id: int, user_portfolio: dict) -> Bool - CREATE portfolio FOR SPECIFIC USER
  - PATCH **/user/portfolio** FORM(user_id: int, user_portfolio: dict) -> Bool - EDIT portfolio OF USER SPECIFIED
  - DELETE **/user/portfolio** Query(user_id: int) -> Bool - DELETE SINGLE Portfolio BY user id
-
+```
 #### Reviews
+```
  - GET **/user/review** Query(review_id: int) -> Review - GET SINGLE review
  - GET **/user/reviews** Query(user_id: int) -> List[Review] - GET ALL Reviews by User
  - POST **/user/review** FORM(user_id: int, review_data: dict) -> Bool - CREATE review FOR SPECIFIC USER
  - PATCH **/user/review** FORM(user_id: int, review_data: dict) -> Bool - EDIT review OF USER SPECIFIED
  - DELETE **/user/review** Query(review_id: int) -> Bool - DELETE SINGLE Review BY ID
-
+```
 #### Jobs
+```
  - GET **/job** Query(job_id: int) -> Job - GET SINGLE JOB
  - GET **/jobs** -> List[Jobs] - GET ALL JOBS
  - GET **/jobs/user** Query(user_id: int) -> List[Jobs] - GET ALL JOBS RELATED TO A USER
@@ -185,26 +338,29 @@ Example
  - DELETE **/job** Query(job_id: int) -> Bool - DELETE SINGLE JOB BY ID
  - POST **/job** FORM(job_id: id, job_data: dict) -> Bool - CREATE JOB WITH DATA
  - PATCH **/job** FORM(job_id: int, job_data: dict) -> Bool - Update job by job_id
-
+```
  ##### onDelete
  SOFT CascadeOnDelete ( Proposals )
 
 #### Proposals
+```
  - GET **/job/proposal** Query(job_id: int, proposal_id: int) -> Proposal - GET SINGLE proposal FROM Specific Job
  - GET **/job/proposals** Query(job_id: int) -> List[Proposals] - GET ALL proposals from specific JOB
  - DELETE **/job/proposal** Query(proposal_id: int) -> Bool - SOFT DELETE SINGLE proposal BY ID
  - POST **/job/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - CREATE proposal WITH DATA
  - PATCH **/job/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - EDIT proposal WITH DATA
-
+```
 #### Transactions
+```
  - GET **/transaction** Query(id: int) -> Transaction - GET SINGLE transaction 
  - GET **/proposal/transaction** Query(proposal_id: int) -> Transaction - GET Transaction By Proposal_id
  - GET **/job/transactions** Query(job_id: int) -> List[Transactions] - GET ALL transactions by job
  - DELETE **/job/transaction** Query(transaction_id: int) -> Bool - DELETE SINGLE transaction BY transaction ID
  - POST **/job/transaction** FORM(job_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA by job_id
  - PATCH **/job/transaction** FORM(job_id: int, transaction_data: dict) -> Bool - EDIT transaction WITH DATA
-
+```
 #### Messages
+```
  - GET **/message** Query(message_id: int) -> Message - GET SINGLE message by id
  - GET **/messages/author** Query(author_id: int) -> List[Message] - GET all messages by author 
  - GET **/messages/recipient** Query(recipient_id: int) -> List[Message] - GET all messages by recipient
@@ -214,20 +370,24 @@ Example
  - DELETE **/message** Query(message_id: int) -> Bool - DELETE SINGLE message by message ID
  - POST **/message** FORM(author_id: int, message_data: dict) -> Bool - CREATE message WITH DATA
  - PATCH **/message** FORM(message_id: int, message_data: dict) -> Bool - EDIT message WITH DATA
-
+```
 #### Categories
+```
  - GET **/category** Query(category_id: int) -> Category - GET SINGLE category
  - GET **/categories** Query(category_id: int) -> List[Category] - GET ALL categories
  - DELETE **/category** Query(category_id: int) -> Bool - DELETE SINGLE category BY ID
  - POST **/category** FORM(category_id: int, category_data: dict) -> Bool - CREATE category WITH DATA
  - PATCH **/category** FORM(category_id: int, category_data: dict) -> Bool - EDIT category WITH DATA
-
+```
  #### Notifications
+ ```
  - GET **/notification** Query(notification_id: int) -> Notification - GET SINGLE notification
  - GET **/user/notifications** Query(user_id: int) -> List[Notification] - GET ALL notifications by User id
  - POST **/user/notification** FORM(user_id: int, notification_data: dict) -> Bool - CREATE notification WITH DATA By user id
  - PATCH **/notification** FORM(notification_id: int, notification_data: dict) -> Bool - EDIT notification WITH DATA by notification_id
  - DELETE **/notification** Query(notification_id: int) -> Bool - DELETE SINGLE notification BY ID
+```
+
 
 
 ## Frontend
