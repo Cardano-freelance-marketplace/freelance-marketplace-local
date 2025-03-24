@@ -13,6 +13,8 @@
 
 - **transactions**: Logs financial transactions, including payments, refunds, and escrow details.​
 
+- **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of jobs.​
+
 #### Relationships and Permissions:
 
 - **User and Roles**: One Role has many users and one user can only have one role
@@ -38,7 +40,6 @@
 
 - **notifications**: Manages system alerts and notifications for user activities.
 
-- **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of jobs.​
 
 
 ## Table Schemas
@@ -194,6 +195,8 @@
 - Admin
 - User
 - Guest
+
+TODO DEFINE WHAT ROLE HAS WHAT PERMISSIONS
 
 
 ## **Role-Based Access Control (RBAC)**: 
@@ -401,5 +404,53 @@ Example
 
 
 ## Frontend
+
+#### Mesh js
+- Initiate wallet connection 
+```Typescript
+      const selected = await BrowserWallet.enable(walletName);
+      setWallet(selected);
+      setSelectedWallet(walletName);
+```
+- Build transaction
+```Typescript
+    const tx = new Transaction({ initiator: wallet });
+
+    // Define the recipient and the amount to send
+    tx.sendLovelace(
+      "addr1qxexample...your_recipient_address...", // Replace with the recipient's address
+      "5000000" // Amount in Lovelace (5 ADA)
+    );
+
+    // Optional: Add metadata (example key: 674, value: "Hello Cardano")
+    tx.metadata(674, "Hello Cardano");
+
+    // Build the transaction
+    const unsignedTx = await tx.build();
+```
+- Sign transaction
+```Typescript
+const signTransaction = async (wallet: BrowserWallet, unsignedTx: string) => {
+  try {
+    const signedTx = await wallet.signTx(unsignedTx, true);
+    console.log("Signed Transaction:", signedTx);
+    return signedTx;
+  } catch (error) {
+    console.error("Error signing transaction:", error);
+  }
+};
+```
+- Submit transaction
+```Typescript
+const submitTransaction = async (wallet: BrowserWallet, signedTx: string) => {
+  try {
+    const txHash = await wallet.submitTx(signedTx);
+    console.log("Transaction Hash:", txHash);
+    return txHash;
+  } catch (error) {
+    console.error("Error submitting transaction:", error);
+  }
+};
+```
 
 ### Pages
