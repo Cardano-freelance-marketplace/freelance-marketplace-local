@@ -408,9 +408,17 @@ Example
 #### Mesh js
 - Initiate wallet connection 
 ```Typescript
-      const selected = await BrowserWallet.enable(walletName);
-      setWallet(selected);
-      setSelectedWallet(walletName);
+  const connectWallet = async () => {
+    try {
+      const wallet = await BrowserWallet.enable("lace");
+      const address = (await wallet.getUsedAddresses())[0]; // Get the user's first address
+
+      console.log("Connected Address:", address);
+      return wallet;
+    } catch (error) {
+      console.error("Error connecting to Lace wallet:", error);
+    }
+  };
 ```
 - Build transaction
 ```Typescript
