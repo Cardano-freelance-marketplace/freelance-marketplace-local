@@ -11,6 +11,10 @@
 
 - **milestones**: Manages agreements about job steps between clients and freelancers, tracking job progress and terms.​
 
+- **proposals**: When a client creates a job, freelancers can propose on milestones and rewards
+
+- **orders**: When a freelancer proposes a job, clients can queue up on orders.
+
 - **transactions**: Logs financial transactions, including payments, refunds, and escrow details.​
 
 - **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of jobs.​
@@ -21,7 +25,15 @@
 
 - **Job and Milestone**: Implement a one-to-many relationship where each job can have multiple milestones.​
 
+- **Job and Proposal**: Implement a one-to-many relationship where each job can have multiple proposals.​
+
+- **Job and Order**: Implement a one-to-many relationship where each job can have multiple orders.​
+
 - **USERS and Jobs**: Set up a one-to-many relationship where a user can post multiple jobs.​
+
+- **USER and Proposals**: Set up a one-to-many relationship where a user can post multiple proposals.​
+
+- **USER and orders**: Set up a one-to-many relationship where a user can post multiple orders.​
 
 - **Jobs and Transactions**: Set up a one-to-many relationship where a Job can have multiple transactions.​
 
@@ -81,6 +93,7 @@
   first_name(VARCHAR(50)),
   last_name(VARCHAR(50)),
   bio(text),
+  tags(list of strings), //USE THIS TO SEARCH FOR A FREELANCER BY KEYWORDS
   location(varchar(100)),
   profile_picture(varchar(255)),
   contact_number(20)
@@ -91,21 +104,25 @@
   job_id(INT, PRIMARY),
   title(varchar(50)),
   description(TEXT),
-  sub_category_id(INT, FOREIGN KEY)
-  client_id(int, NOT NULL, FOREIGN KEY),
+  sub_category_id(INT, FOREIGN KEY),
+  total_price(float, NULLABLE),
+  tags(list of strings), //USE THIS TO SEARCH FOR A JOB BY KEYWORDS
+  client_id(int, FOREIGN KEY),
+  freelancer_id(INT, FOREIGN KEY)
   created_at(TIMESTAMP),
   updated_at(TIMESTAMP),
+  type(INTEGER, NOT NULL) // SERVICE OR REQUEST
   ```
   ```sql
   status(Integer)
  ```
- Status will have 4 different statuses :
- - Requested (0 - When a client creates a job but the job has no freelancer associated with it.)
- - Draft(1 - When a job has a freelancer, and users are deciding milestones, payments etc..)
- - In Progress(2 - When there are milestones to be completed.)
- - Completed(3 - When all milestones are completed)
- - Canceled(4 - When Job is canceled by the client or the freelancer)
-
+ Status will have 6 different statuses :
+ - **Pending Approval** (0 - When a job of type request or service is created, needs to be approved by platform, to see if it follows ToS)
+ - **Approved** (1 - Ready to be displayed on the platform)
+ - **Draft** (2 - When a job has found a freelancer/client, and is approving milestones and rewards defined by the client/freelancer.)
+ - **In Progress** (3 - After the job is created and the funds are allocated on the smart contract)
+ - **Completed** (4 - When all milestones are completed)
+ - **Canceled** (5 - When Job is canceled by the client or the freelancer)
 
 
  #### milestones
@@ -116,7 +133,7 @@
   ```
   milestone_tx_hash(VARCHAR(100)) 
   ```
-  // THIS IS THE 'ID' OF THE UTXO INSIDE THE SMART CONTRACT, UTXO''s in this case are like items in a list, that list contains the approval status of the freelancer and the client.
+  THIS IS THE 'ID' OF THE UTXO INSIDE THE SMART CONTRACT, UTXO''s in this case are like items in a list, that list contains the approval status of the freelancer and the client.
   Grab this UTXO reference from the blockchain transaction response
   ```
   client_id(INT, FOREIGN KEY, NOT NULL),
@@ -126,8 +143,27 @@
   created_at(TIMESTAMP, NOT NULL),
   client_approved(Boolean),
   freelancer_approved(Boolean),
-  status(VARCHAR(50), NOT NULL),
+  status(INT, NOT NULL),
  ```
+ Type is a column to save which type of milestone it is. If its a milestone belonging to a proposal or a job milestone
+ ```
+  type(INT, NOT NULL)
+```
+
+  #### proposals
+  ```sql
+  proposal_id(INT, PRIMARY KEY),
+  milestone_id(INT, FOREIGN KEY, NOT NULL),
+  job_id(INT, FOREIGN KEY, NOT NULL),
+  freelancer_id(INT, FOREIGN KEY, NOT NULL)
+  ```
+
+  #### orders
+  ```sql
+  order_id(INT, PRIMARY KEY),
+  job_id(INT, FOREIGN KEY, NOT NULL),
+  client_id(NT, FOREIGN KEY, NOT NULL)
+  ```
 
   #### Transactions
   ```sql
@@ -383,6 +419,28 @@ Example
  - PATCH **/job/milestone/approve** FORM(job_id: int, user_id: int) -> Bool - Approve milestone STATUS
  - PATCH **/job/milestone** FORM(job_id: int, milestone_data: dict) -> Bool - EDIT milestone WITH DATA
 ```
+ #### proposals
+ ```
+ - GET **/proposal** Query(proposal_id: int) -> Proposal - GET SINGLE proposal
+ - GET **/proposal/pending/user** Query(user_id: int) -> List[Proposal] - GET ALL PENDING PROPOSALS BY USER
+ - GET **/proposal/pending/job** Query(job_id: int) -> List[Proposal] - GET ALL PENDING PROPOSALS BY JOB
+ - POST **/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - CREATE a proposal for a specific job
+ - PATCH **/proposal** FORM(proposal_id: int, proposal_data: dict) -> Bool - EDIT proposal for a specific job
+ - DELETE **/proposal** Query(proposal_id: int) -> Bool - DELETE proposal by proposal_id
+```
+
+ #### orders
+ ```
+ - GET **/order** Query(order_id: int) -> order - GET SINGLE order
+ - GET **/order/pending/user** Query(user_id: int) -> List[order] - GET ALL PENDING orders BY USER
+ - GET **/order/pending/job** Query(job_id: int) -> List[order] - GET ALL PENDING orders BY JOB
+ - GET **/order/active/user** Query(user_id: int) -> List[order] - GET ALL active orders BY USER
+ - GET **/order/active/job** Query(job_id: int) -> order - GET active order BY JOB
+ - POST **/order** FORM(job_id: int, order_data: dict) -> Bool - CREATE a order for a specific job
+ - PATCH **/order** FORM(order_id: int, order_data: dict) -> Bool - EDIT order for a specific job
+ - DELETE **/order** Query(order_id: int) -> Bool - DELETE order by order_id
+```
+
 #### Transactions
 ```
  - GET **/transaction** Query(id: int) -> Transaction - GET SINGLE transaction 
@@ -435,13 +493,6 @@ Login
 - Grab the public address and other useful data and send to Backend, where it will be checked if the user already exists in the database. 
 - If user doesn't exist, force user to fill in required information
 ```
-
-### User Type
-There are two user types
-- **freelancer**
-- **client**
-
-In the database
 
 #### Mesh js
 - Initiate wallet connection 
