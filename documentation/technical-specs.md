@@ -52,6 +52,8 @@
 
 - **notifications**: Manages system alerts and notifications for user activities.
 
+- **wishlists**: Wishlists are a list of jobs a user has liked
+
 
 
 ## Table Schemas
@@ -153,7 +155,7 @@
   #### proposals
   ```sql
   proposal_id(INT, PRIMARY KEY),
-  milestone_id(INT, FOREIGN KEY, NOT NULL),
+  milestone_id(INT, FOREIGN KEY),
   job_id(INT, FOREIGN KEY, NOT NULL),
   freelancer_id(INT, FOREIGN KEY, NOT NULL)
   ```
@@ -162,6 +164,7 @@
   ```sql
   order_id(INT, PRIMARY KEY),
   job_id(INT, FOREIGN KEY, NOT NULL),
+  milestone_id(INT, FOREIGN KEY),
   client_id(NT, FOREIGN KEY, NOT NULL)
   ```
 
@@ -247,6 +250,37 @@
   content: str
   creation_date: datetime
   was_notified: boolean
+  ```
+
+    #### Wishlists
+  ```
+  user_id: int
+  lists: [
+    "webdevelopment_indian_content": {
+      creation_date: datetime
+      description: string
+      lists: {
+        "services": [job_id1, job_id2, job_id3],
+        "requests": [job_id1, job_id2, job_id3]
+      }
+    },
+    "kamasutra": {
+      creation_date: datetime
+      description: string
+      lists: {
+        "services": [job_id1, job_id2, job_id3],
+        "requests": [job_id1, job_id2, job_id3]
+      }
+    },
+    "watch later": {
+      creation_date: datetime
+      description: string
+      lists: {
+        "services": [job_id1, job_id2, job_id3],
+        "requests": [job_id1, job_id2, job_id3]
+      }
+    },
+  ]
   ```
 
 # Roles
@@ -571,6 +605,7 @@ https://minswap.org
 Logo - redirects to home page
 Jobs
 messages icon
+wishlist (heart icon)
 notifications icon
 User avatar - dropdown (profile, my jobs - requests and services, logout)
 ```
