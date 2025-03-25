@@ -252,7 +252,7 @@
   was_notified: boolean
   ```
 
-    #### Wishlists
+  #### Wishlists
   ```
   user_id: int
   lists: [
@@ -446,18 +446,19 @@ Example
 
 #### milestones
 ```
- - GET **/job/milestone** Query(job_id: int, milestone_id: int) -> milestone - GET SINGLE milestone FROM Specific Job
+ - GET **/milestone** Query(milestone_id: int) -> milestone - GET SINGLE milestone
  - GET **/job/milestones** Query(job_id: int) -> List[milestones] - GET ALL milestones from specific JOB
  - DELETE **/job/milestone** Query(milestone_id: int) -> Bool - SOFT DELETE SINGLE milestone BY ID
  - POST **/job/milestone** FORM(job_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
- - PATCH **/job/milestone/approve** FORM(job_id: int, user_id: int) -> Bool - Approve milestone STATUS
+ - PATCH **/job/milestone/approve** FORM(job_id: int, user_id: int) -> Bool - Approve User milestone STATUS
+ - PATCH **/job/milestone/reject** FORM(job_id: int, user_id: int) -> Bool - reject User milestone STATUS
  - PATCH **/job/milestone** FORM(job_id: int, milestone_data: dict) -> Bool - EDIT milestone WITH DATA
 ```
  #### proposals
  ```
  - GET **/proposal** Query(proposal_id: int) -> Proposal - GET SINGLE proposal
- - GET **/proposal/pending/user** Query(user_id: int) -> List[Proposal] - GET ALL PENDING PROPOSALS BY USER
- - GET **/proposal/pending/job** Query(job_id: int) -> List[Proposal] - GET ALL PENDING PROPOSALS BY JOB
+ - GET **/proposal/user** Query(user_id: int) -> List[Proposal] - GET ALL PROPOSALS BY USER
+ - GET **/proposal/job** Query(job_id: int) -> List[Proposal] - GET ALL PROPOSALS BY JOB
  - POST **/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - CREATE a proposal for a specific job
  - PATCH **/proposal** FORM(proposal_id: int, proposal_data: dict) -> Bool - EDIT proposal for a specific job
  - DELETE **/proposal** Query(proposal_id: int) -> Bool - DELETE proposal by proposal_id
@@ -470,8 +471,10 @@ Example
  - GET **/order/pending/job** Query(job_id: int) -> List[order] - GET ALL PENDING orders BY JOB
  - GET **/order/active/user** Query(user_id: int) -> List[order] - GET ALL active orders BY USER
  - GET **/order/active/job** Query(job_id: int) -> order - GET active order BY JOB
+ - GET **/order/all/user** Query(user_id: int) -> List[order] - GET ALL orders BY USER
+ - GET **/order/all/job** Query(job_id: int) -> order - GET active BY JOB
  - POST **/order** FORM(job_id: int, order_data: dict) -> Bool - CREATE a order for a specific job
- - PATCH **/order** FORM(order_id: int, order_data: dict) -> Bool - EDIT order for a specific job
+ - PATCH **/order** FORM(order_id: int, order_data: dict) -> Bool - EDIT order
  - DELETE **/order** Query(order_id: int) -> Bool - DELETE order by order_id
 ```
 
@@ -490,6 +493,7 @@ Example
  - GET **/messages/author** Query(author_id: int) -> List[Message] - GET all messages by author 
  - GET **/messages/recipient** Query(recipient_id: int) -> List[Message] - GET all messages by recipient
  - GET **/messages/conversation/** Query(recipient_id: int, author_id) List[Message] - GET all messages between two users
+ - GET **/messages/inbox/** Query(user_id: int) List[Message] - GET ALL MESSAGES WHERE THIS USER PARTICIPATES
  - GET **/job/messages/author** Query(job_id: int, author_id: int) -> List[Message] - GET all messages from job by author_id
  - GET **/job/messages** Query(job_id: int) -> List[Message] - GET ALL messages by job
  - DELETE **/message** Query(message_id: int) -> Bool - DELETE SINGLE message by message ID
