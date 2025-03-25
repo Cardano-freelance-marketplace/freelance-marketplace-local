@@ -500,3 +500,71 @@ const submitTransaction = async (wallet: BrowserWallet, signedTx: string) => {
 ```
 
 ### Pages
+
+#### Login
+```
+Login page where user selects a wallet and then a MeshJS prompt window will pop up for the user to sign a transaction to confirm their identity 
+```
+
+#### Indice
+```
+Overview of the project
+Navbar
+Searchbar
+
+https://minswap.org
+```
+
+#### Navbar
+```
+Logo - redirects to home page
+Jobs
+messages icon
+notifications icon
+User avatar - dropdown (profile, my jobs - requests and services, logout)
+```
+
+#### Profile
+```
+Portfolio and reviews
+
+https://www.fiverr.com/linkbuilders_?source=gig_cards&referrer_gig_slug=build-professional-responsive-wordpress-landing-page-elementor-landing-page-we&ref_ctx_id=63a9cdb4e830429d9421272e9c6775f7&imp_id=e7baf620-5274-41c0-a651-075a3cce4176
+```
+
+#### My jobs
+```markdown
+Page where you can see detail about active orders and active proposals
+
+Page where you can see detail about pending orders and pending proposals
+```
+
+#### Jobs
+```markdown
+- Title
+- Small job description
+- Total price
+- Type (service or request)
+```
+
+#### Jobs details
+```markdown
+Details about current job
+- Milestones
+- Description
+- Total price
+- Type (service or request)
+
+If the job is of type request (requested by a client) then have the ablity to create a proposal defines milestones and rewards
+```
+
+#### Footer
+```
+```
+
+#### FAQ
+```
+```
+
+#### About
+```
+```
