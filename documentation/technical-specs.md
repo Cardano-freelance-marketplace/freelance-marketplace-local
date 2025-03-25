@@ -9,7 +9,7 @@
 
 - **jobs**: Holds information about job postings, including descriptions, requirements, budgets, and deadlines.​
 
-- **proposal**: Manages agreements between clients and freelancers, tracking job progress and terms.​
+- **milestones**: Manages agreements about job steps between clients and freelancers, tracking job progress and terms.​
 
 - **transactions**: Logs financial transactions, including payments, refunds, and escrow details.​
 
@@ -19,7 +19,7 @@
 
 - **User and Roles**: One Role has many users and one user can only have one role
 
-- **Job and Proposal**: Implement a one-to-many relationship where each job can have multiple proposals.​
+- **Job and Milestone**: Implement a one-to-many relationship where each job can have multiple milestones.​
 
 - **USERS and Jobs**: Set up a one-to-many relationship where a user can post multiple jobs.​
 
@@ -52,9 +52,20 @@
   is_activate(boolean),
   role_id(INT, NOT NULL, FOREIGN KEY),
   wallet_public_address(varchar(100), UNIQUE, NOT NULL),
-  wallet_type(Varchar(50), NOT NULL)
-  last_login(datetime),
   ```
+  ```sql
+  wallet_type(Integer, NOT NULL)
+  ```
+  Wallet_type will be an enum which will represent the wallet the user, uses :
+  - 1 = Lace
+  - 2 = Yoroi
+  - etc..
+  ```sql
+  last_login(datetime),
+  type(INTEGER), 
+  ```
+  Type will have values {'0': None, '1': 'freelancer', '2': 'client', '3': 'both'} USE ENUM IN API TO DECLARE WHICH IS WHICH
+
 
   #### Roles
   ```sql
@@ -84,29 +95,44 @@
   client_id(int, NOT NULL, FOREIGN KEY),
   created_at(TIMESTAMP),
   updated_at(TIMESTAMP),
-  status(VARCHAR(50))
+  ```
+  ```sql
+  status(Integer)
  ```
+ Status will have 4 different statuses :
+ - Requested (0 - When a client creates a job but the job has no freelancer associated with it.)
+ - Draft(1 - When a job has a freelancer, and users are deciding milestones, payments etc..)
+ - In Progress(2 - When there are milestones to be completed.)
+ - Completed(3 - When all milestones are completed)
+ - Canceled(4 - When Job is canceled by the client or the freelancer)
 
- #### Proposals
+
+
+ #### milestones
  ```sql
-  proposal_id(INT, PRIMARY KEY),
+  milestone_id(INT, PRIMARY KEY),
   job_id(INT, NOT NULL, FOREIGN KEY),
-  proposal_tx_hash(VARCHAR(100), ) // THIS IS THE 'ID' OF THE UTXO INSIDE THE SMART CONTRACT, UTXO''s in this case are like items in a list, that list contains the approval status of the freelancer and the client.
+  ```
+  ```
+  milestone_tx_hash(VARCHAR(100)) 
+  ```
+  // THIS IS THE 'ID' OF THE UTXO INSIDE THE SMART CONTRACT, UTXO''s in this case are like items in a list, that list contains the approval status of the freelancer and the client.
   Grab this UTXO reference from the blockchain transaction response
+  ```
   client_id(INT, FOREIGN KEY, NOT NULL),
   freelancer_id(INT, FOREIGN KEY, NOT NULL),
-  proposal_text(TEXT, NOT NULL),
+  milestone_text(TEXT, NOT NULL),
   reward_amount(FLOAT, NOT NULL),
   created_at(TIMESTAMP, NOT NULL),
   client_approved(Boolean),
   freelancer_approved(Boolean),
-  is_finished(Boolean),
+  status(VARCHAR(50), NOT NULL),
  ```
 
   #### Transactions
   ```sql
   transaction_id(INT, PRIMARY KEY),
-  proposal_id(INT, FOREIGN KEY, NOT NULL),
+  milestone_id(INT, FOREIGN KEY, NOT NULL),
   amount(DECIMAL(10,2), NOT NULL)
   token_name(VARCHAR(50))
   receiver_address(TEXT)
@@ -165,8 +191,6 @@
       }
     ]
   ```
-
-
 
   #### Messages
   ```
@@ -309,9 +333,6 @@ Example
  - PATCH **/user** FORM(user_id: int, user_data: dict) -> Bool - EDIT USER WITH DATA
  ```
 
-##### onDelete
- SOFT CascadeOnDelete ( Profiles, Portfolios)
-
 #### User Roles
 ```
  - GET **/user/role** Query(user_id: int) -> Role - GET ROLE OF USER
@@ -351,21 +372,21 @@ Example
  - PATCH **/job/cancel** FORM(job_id: int, user_id: int) -> Bool - Update job by job_id
 ```
  ##### onDelete
- SOFT CascadeOnDelete ( Proposals )
+ SOFT CascadeOnDelete ( milestones )
 
-#### Proposals
+#### milestones
 ```
- - GET **/job/proposal** Query(job_id: int, proposal_id: int) -> Proposal - GET SINGLE proposal FROM Specific Job
- - GET **/job/proposals** Query(job_id: int) -> List[Proposals] - GET ALL proposals from specific JOB
- - DELETE **/job/proposal** Query(proposal_id: int) -> Bool - SOFT DELETE SINGLE proposal BY ID
- - POST **/job/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - CREATE proposal WITH DATA
- - PATCH **/job/proposal/approve** FORM(job_id: int, user_id: int) -> Bool - Approve proposal STATUS
- - PATCH **/job/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - EDIT proposal WITH DATA
+ - GET **/job/milestone** Query(job_id: int, milestone_id: int) -> milestone - GET SINGLE milestone FROM Specific Job
+ - GET **/job/milestones** Query(job_id: int) -> List[milestones] - GET ALL milestones from specific JOB
+ - DELETE **/job/milestone** Query(milestone_id: int) -> Bool - SOFT DELETE SINGLE milestone BY ID
+ - POST **/job/milestone** FORM(job_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
+ - PATCH **/job/milestone/approve** FORM(job_id: int, user_id: int) -> Bool - Approve milestone STATUS
+ - PATCH **/job/milestone** FORM(job_id: int, milestone_data: dict) -> Bool - EDIT milestone WITH DATA
 ```
 #### Transactions
 ```
  - GET **/transaction** Query(id: int) -> Transaction - GET SINGLE transaction 
- - GET **/proposal/transaction** Query(proposal_id: int) -> Transaction - GET Transaction By Proposal_id
+ - GET **/milestone/transaction** Query(milestone_id: int) -> Transaction - GET Transaction By milestone_id
  - GET **/job/transactions** Query(job_id: int) -> List[Transactions] - GET ALL transactions by job
  - DELETE **/job/transaction** Query(transaction_id: int) -> Bool - DELETE SINGLE transaction BY transaction ID
  - POST **/job/transaction** FORM(job_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA by job_id
@@ -400,10 +421,27 @@ Example
  - DELETE **/notification** Query(notification_id: int) -> Bool - DELETE SINGLE notification BY ID
 ```
 
-
-
-
 ## Frontend
+
+### Color palette
+
+-- TBD --
+
+### Authentication
+Login 
+```markdown
+# Login page
+- Login will be made through browser wallets, when a user selects a wallet and successfuly logs in. 
+- Grab the public address and other useful data and send to Backend, where it will be checked if the user already exists in the database. 
+- If user doesn't exist, force user to fill in required information
+```
+
+### User Type
+There are two user types
+- **freelancer**
+- **client**
+
+In the database
 
 #### Mesh js
 - Initiate wallet connection 
