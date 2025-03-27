@@ -613,6 +613,7 @@ wishlist (heart icon)
 notifications icon
 User avatar - dropdown (profile, my jobs - requests and services, logout)
 ```
+![alt text](images/navbar_profile.png)
 
 #### Profile
 ```
@@ -625,11 +626,13 @@ https://www.fiverr.com/linkbuilders_?source=gig_cards&referrer_gig_slug=build-pr
 ```
 Dropdown where you can see your notifications
 ```
+![alt text](images/notifications.png)
 
 #### Inbox
 ```
 Page where you can chat with other persons
 ```
+![alt text](images/inbox.png)
 
 #### My jobs
 ```markdown
@@ -675,4 +678,3 @@ If the job is of type request (requested by a client) then have the ablity to cr
 #### About
 ```
 ```
-![alt text](images/inbox.png)
