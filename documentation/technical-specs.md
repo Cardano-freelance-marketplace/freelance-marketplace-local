@@ -5,7 +5,10 @@
 
 - **user_roles**: Defines various roles and associates them with users.​
 
+- **user_skills**: Defines skills for each user
+
 - **profiles**: Contains detailed profiles for both clients and freelancers, such as portfolios and ratings.​
+
 
 - **jobs**: Holds information about job postings, including descriptions, requirements, budgets, and deadlines.​
 
@@ -22,6 +25,8 @@
 #### Relationships and Permissions:
 
 - **User and Roles**: One Role has many users and one user can only have one role
+
+- **User and Skills**: One User has many skills and one skill has many users.
 
 - **Job and Milestone**: Implement a one-to-many relationship where each job can have multiple milestones.​
 
@@ -85,6 +90,13 @@
   ```sql
   role_id(INT, Primary)
   role_name(VARCHAR(50), NOT NULL, UNIQUE)
+  role_description(TEXT) 
+  ```
+
+  #### user_skills
+  ```sql
+  id(INT, Primary)
+  keyword(VARCHAR(50), NOT NULL, UNIQUE)
   role_description(TEXT) 
   ```
 
