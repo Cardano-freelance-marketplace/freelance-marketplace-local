@@ -26,7 +26,7 @@
 
 - **User and Roles**: One Role has many users and one user can only have one role
 
-- **User and Skills**: One User has many skills and one skill has many users.
+- **Profile and Skills**: One Profile has many skills and one skill has many Profiles.
 
 - **Job and Milestone**: Implement a one-to-many relationship where each job can have multiple milestones.​
 
@@ -107,7 +107,6 @@
   first_name(VARCHAR(50)),
   last_name(VARCHAR(50)),
   bio(text),
-  tags(list of strings), //USE THIS TO SEARCH FOR A FREELANCER BY KEYWORDS
   location(varchar(100)),
   profile_picture(varchar(255)),
   contact_number(20)
