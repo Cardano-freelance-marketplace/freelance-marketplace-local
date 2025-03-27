@@ -236,11 +236,11 @@
   message_id: int
   sender_id: int
   receiver_id: int
-  content: int
+  content: str
   sent_time: datetime
   received_time: datetime
-  was_edited: boolean
-  was_viewed: boolean
+  is_edited: boolean
+  is_viewed: boolean
   ```
 
   #### Notifications
@@ -592,15 +592,16 @@ const submitTransaction = async (wallet: BrowserWallet, signedTx: string) => {
 
 #### Login
 ```
-Login page where user selects a wallet and then a MeshJS prompt window will pop up for the user to sign a transaction to confirm their identity 
+Login will be made through the navbar where user selects 'Connect wallet'.
+Selects the wallet from a side menu.
+And then a MeshJS prompt window will pop up for the user to sign a transaction to confirm their identity.
 ```
+![alt text](images/connect_prompt.png)
+![alt text](images/login_connect.png)
 
 #### Indice
 ```
 Overview of the project
-Navbar
-Searchbar
-
 https://minswap.org
 ```
 
@@ -614,6 +615,10 @@ notifications icon
 User avatar - dropdown (profile, my jobs - requests and services, logout)
 ```
 ![alt text](images/navbar_profile.png)
+![alt text](images/navbar_job_search_category.png)
+To search for a job you have a couple of options : 
+- Search using the side bar.
+- Search using the search by in the middle of the navbar.
 
 #### Profile
 ```
@@ -662,6 +667,7 @@ Info about job:
 - Total price
 - Type (service or request)
 ```
+![alt text](images/job_grid.png)
 
 #### Jobs details
 ```markdown
