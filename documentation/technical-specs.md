@@ -634,6 +634,13 @@ Page where you can chat with other persons
 ```
 ![alt text](images/inbox.png)
 
+#### Wishlist
+```
+Page where you can see saved jobs grouped by list
+```
+![alt text](images/wishlist_list.png)
+![alt text](images/wishlist_details.png)
+
 #### My jobs
 ```markdown
 Page where you can see detail about active orders and active proposals
