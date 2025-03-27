@@ -621,6 +621,16 @@ Portfolio and reviews
 https://www.fiverr.com/linkbuilders_?source=gig_cards&referrer_gig_slug=build-professional-responsive-wordpress-landing-page-elementor-landing-page-we&ref_ctx_id=63a9cdb4e830429d9421272e9c6775f7&imp_id=e7baf620-5274-41c0-a651-075a3cce4176
 ```
 
+#### Notifications
+```
+Dropdown where you can see your notifications
+```
+
+#### Inbox
+```
+Page where you can chat with other persons
+```
+
 #### My jobs
 ```markdown
 Page where you can see detail about active orders and active proposals
@@ -630,6 +640,13 @@ Page where you can see detail about pending orders and pending proposals
 
 #### Jobs
 ```markdown
+Page where you can see all jobs (services and/or requests) 
+
+Filter: job type, date, name, tag, author
+
+Sorters: Price, date, rating
+
+Info about job:
 - Title
 - Small job description
 - Total price
