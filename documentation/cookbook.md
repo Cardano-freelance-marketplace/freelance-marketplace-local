@@ -72,7 +72,7 @@ sudo chmod +x start_dev.sh
 npm install
 
 # Start the development server
-npm run dev
+npm start
 ```
 
 ### **Smart Contracts (Aiken)**
@@ -82,6 +82,9 @@ npm run dev
 curl --proto '=https' --tlsv1.2 -LsSf https://install.aiken-lang.org | sh
 
 # Install aiken to PATH by following terminal instructions
+
+## Run this command
+aikup
 
 # Verify installation
 aiken --version
