@@ -410,7 +410,7 @@ Example
  - GET **/users** -> List[User] - GET ALL USERS
  - GET **/users/job** Query(job_id: int) -> List[User] - GET ALL USERS by job
  - DELETE **/user** Query(user_id: int) -> Bool - SOFT DELETE SINGLE USER BY ID
- - POST **/user** FORM(user_data: dict) -> Bool - CREATE USER WITH DATA
+ - POST **/user** FORM(user_id, user_data: dict) -> Bool - CREATE USER WITH DATA
  - PATCH **/user** FORM(user_id: int, user_data: dict) -> Bool - EDIT USER WITH DATA
  ```
 
