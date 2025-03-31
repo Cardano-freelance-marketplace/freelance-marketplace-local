@@ -601,6 +601,14 @@ const submitTransaction = async (wallet: BrowserWallet, signedTx: string) => {
 
 ### Pages
 
+#### Site Colors
+```
+#111218
+#d84b16
+#b0b0b0
+#ffffff
+```
+
 #### Login
 ```
 Login will be made through the navbar where user selects 'Connect wallet'.
