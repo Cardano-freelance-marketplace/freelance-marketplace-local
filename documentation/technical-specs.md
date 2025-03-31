@@ -156,7 +156,7 @@
   created_at(TIMESTAMP, NOT NULL),
   client_approved(Boolean),
   freelancer_approved(Boolean),
-  status(INT, NOT NULL),
+  status(INT, NOT NULL), // 0 - DRAFT, 1 - IN PROGRESS, 2 - COMPLETE
  ```
  Type is a column to save which type of milestone it is. If its a milestone belonging to a proposal or a job milestone
  ```
