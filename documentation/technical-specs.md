@@ -30,6 +30,8 @@
 
 - **Job and Milestone**: Implement a one-to-many relationship where each job can have multiple milestones.​
 
+- **Job and Job type**: Implement a one-to-many relationship where each job has one type, one type has many jobs.
+
 - **Job and Proposal**: Implement a one-to-many relationship where each job can have multiple proposals.​
 
 - **Job and Order**: Implement a one-to-many relationship where each job can have multiple orders.​
@@ -125,7 +127,7 @@
   freelancer_id(INT, FOREIGN KEY)
   created_at(TIMESTAMP),
   updated_at(TIMESTAMP),
-  type(INTEGER, NOT NULL) // SERVICE OR REQUEST
+  job_type_id(INTEGER, FOREIGN KEY, NOT NULL) // SERVICE OR REQUEST
   ```
   ```sql
   status(Integer)
@@ -138,6 +140,14 @@
  - **Completed** (4 - When all milestones are completed)
  - **Canceled** (5 - When Job is canceled by the client or the freelancer)
 
+ #### Job type
+ ```
+  job_type_id(INT, PRIMARY)
+  job_type_name(STRING)
+  job_type_description(STRING)
+
+ TABLE TO SAVE JOB TYPES (SERVICE OR REQUEST)
+ ```
 
  #### milestones
  ```sql
@@ -222,23 +232,27 @@
   ```
     user_id: int
     portfolio_id: int
-    project_title: string
-    description: string
-    start_date: datetime
-    completion_date: datetime
-    tech_stack: List[str]
-    attachments: [
+    projects: [
       {
-          "file_name": str,
-          "file_type": str,
-          "file_data": str
-      }
-    ]
-    images : [
-      {
-        image_name: str
-        file_type: str
-        file_data: binary_data (str)
+        "project_title": str,
+        "description": str,
+        "start_date": datetime,
+        "completion_date": datetime,
+        "tech_stack": List[str]
+        images : [
+          {
+            image_name: str
+            file_type: str
+            file_data: binary_data (str)
+          }
+        ]
+        attachments: [
+          {
+              "file_name": str,
+              "file_type": str,
+              "file_data": str
+          }
+        ]
       }
     ]
   ```
@@ -532,9 +546,12 @@ Example
 ## Frontend
 
 ### Color palette
-
--- TBD --
-
+```
+#111218
+#d84b16
+#b0b0b0
+#ffffff
+```
 ### Authentication
 Login 
 ```markdown
@@ -602,14 +619,6 @@ const submitTransaction = async (wallet: BrowserWallet, signedTx: string) => {
 
 ### Pages
 
-#### Site Colors
-```
-#111218
-#d84b16
-#b0b0b0
-#ffffff
-```
-
 #### Login
 ```
 Login will be made through the navbar where user selects 'Connect wallet'.
@@ -619,21 +628,29 @@ And then a MeshJS prompt window will pop up for the user to sign a transaction t
 ![alt text](images/connect_prompt.png)
 ![alt text](images/login_connect.png)
 
-#### Indice
+#### Index
 ```
 Overview of the project
+If not logged in, show "Connect Wallet"
+If logged in, Show "Create Proposal", "Create order"
 https://minswap.org
 ```
 
 #### Navbar
 ```
 Logo - redirects to home page
-Jobs
+
+Jobs - Left side menu which shows all categories and beaneath each category, show all subcategories
+
 messages icon
+
+SearchBar - When you click the search bar, there will be a div below with a few buttons (people, jobs, orders, proposals), when you click on a button anything you type will search on that topic, if nothing is selected, a default value of jobs will be queried
+
 wishlist (heart icon)
 notifications icon
 User avatar - dropdown (profile, my jobs - requests and services, logout)
 ```
+![alt text](images/search-bar-example.png)
 ![alt text](images/navbar_profile.png)
 ![alt text](images/navbar_job_search_category.png)
 To search for a job you have a couple of options : 
@@ -710,4 +727,25 @@ If the job is of type request (requested by a client) then have the ablity to cr
 
 #### About
 ```
+```
+
+### Routes
+```
+  /index
+  
+  /profile
+  /profile/jobs  - View own jobs
+  /profile/reviews  - View reviews i performed, and reviews on me
+  /profile/orders - View my orders, and orders on my jobs
+  /profile/proposals - View my proposals
+  /portfolio - view my portfolio
+  /wishlists - view my wishlists
+  /inbox - view my messages
+
+  /jobs - view all jobs
+  /jobs/:id - view specific job
+  /people - view grid of people matching my search
+  /about - view website's about page
+  /faq - view FAQ of website
+  
 ```
