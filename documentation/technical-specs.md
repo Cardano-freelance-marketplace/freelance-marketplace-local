@@ -365,8 +365,8 @@
 - User
 - Guest
 
-TODO DEFINE WHAT ROLE HAS WHAT PERMISSIONS
 
+## Backend
 
 ## **Role-Based Access Control (RBAC)**: 
 
@@ -461,10 +461,13 @@ Example
       "duplicate": true
     },
   }
-
 ```
 
-## Backend
+### Middlewares
+```
+login_validator - verify JWT token, check if user is logged in to access private endpoints.
+role_validator - Verify Role inside jwt token, to check if user has permissions to access endpoint.
+```
 
 ### Endpoints
 
@@ -601,6 +604,7 @@ Example
 #b0b0b0
 #ffffff
 ```
+
 ### Authentication
 Login 
 ```markdown
@@ -609,6 +613,12 @@ Login
 - Grab the public address and other useful data and send to Backend, where it will be checked if the user already exists in the database. 
 - If user doesn't exist, force user to fill in required information
 ```
+
+### Route Authorization
+```
+On each private route, send request to the API to check if user has permissions to access specified route.
+```
+
 
 #### Mesh js
 - Initiate wallet connection 
@@ -778,23 +788,33 @@ If the job is of type request (requested by a client) then have the ablity to cr
 ```
 ```
 
+### Toastify Messages
+```
+Success Message
+Warning Message
+Error message
+```
+
 ### Routes
 ```
   /index
-  
-  /profile
-  /profile/jobs  - View own jobs
-  /profile/reviews  - View reviews i performed, and reviews on me
-  /profile/orders - View my orders, and orders on my jobs
-  /profile/proposals - View my proposals
-  /portfolio - view my portfolio
-  /wishlists - view my wishlists
-  /inbox - view my messages
+  /unauthorized - Page when user tries to access a page they dont have permissions
+  /notFound - Page when user tries to access a page that doesnt exist
 
-  /jobs - view all jobs
-  /jobs/:id - view specific job
-  /people - view grid of people matching my search
-  /about - view website's about page
-  /faq - view FAQ of website
+  /profile (PRIVATE)
+  /profile/jobs  (PRIVATE) - View own jobs
+  /profile/reviews  (PRIVATE) - View reviews i performed, and reviews on me
+  /profile/orders (PRIVATE) - View my orders, and orders on my jobs
+  /profile/proposals (PRIVATE) - View my proposals
+  /portfolio (PRIVATE) - view my portfolio
+  /wishlists (PRIVATE) - view my wishlists
+  /inbox (PRIVATE)- view my messages
+
+  /jobs (PUBLIC) - view all jobs
+  /jobs/:id (PUBLIC) - view specific job
+  /people (PUBLIC) - view grid of people matching my search
+  /people/:id (PUBLIC) - View profile of another user
+  /about (PUBLIC) - view website's about page
+  /faq (PUBLIC) - view FAQ of website
   
 ```
