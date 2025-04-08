@@ -32,6 +32,14 @@
 
 - **Job and Job type**: Implement a one-to-many relationship where each job has one type, one type has many jobs.
 
+- **Job and Job status**: Implement a one-to-many relationship where each job has one status, one status has many jobs.
+
+- **Milestones and jobs**: Implement a one-to-many relationship where each job has many milestones, one milestone has one job.
+
+- **Milestone and milestone types**: Implement a one-to-many relationship where each milestone has one type and one type has many milestones
+
+- **Milestone and milestone statuses**: Implement a one-to-many relationship where each milestone has one status and one status has many milestones
+
 - **Job and Proposal**: Implement a one-to-many relationship where each job can have multiple proposals.​
 
 - **Job and Order**: Implement a one-to-many relationship where each job can have multiple orders.​
@@ -76,7 +84,7 @@
   wallet_public_address(varchar(100), UNIQUE, NOT NULL),
   ```
   ```sql
-  wallet_type(Integer, NOT NULL)
+  wallet_type_id(Integer, FOREIGN KEY, NOT NULL)
   ```
   Wallet_type will be an enum which will represent the wallet the user, uses :
   - 1 = Lace
@@ -88,6 +96,12 @@
   ```
   Type will have values {'0': None, '1': 'freelancer', '2': 'client', '3': 'both'} USE ENUM IN API TO DECLARE WHICH IS WHICH
 
+
+  #### Wallet types
+  ```
+  wallet_type_id(INT, PRIMARY KEY)
+  wallet_type_name(STRING)
+  ```
 
   #### Roles
   ```sql
@@ -127,10 +141,10 @@
   freelancer_id(INT, FOREIGN KEY)
   created_at(TIMESTAMP),
   updated_at(TIMESTAMP),
-  job_type_id(INTEGER, FOREIGN KEY, NOT NULL) // SERVICE OR REQUEST
+  job_type_id(INTEGER, FOREIGN KEY, NOT NULL) REFERENCES JOB_TYPES TABLE
   ```
   ```sql
-  status(Integer)
+  status(Integer, FOREIGN KEY) REFERENCES JOB_STATUS TABLE
  ```
  Status will have 6 different statuses :
  - **Pending Approval** (0 - When a job of type request or service is created, needs to be approved by platform, to see if it follows ToS)
@@ -147,6 +161,21 @@
   job_type_description(STRING)
 
  TABLE TO SAVE JOB TYPES (SERVICE OR REQUEST)
+ ```
+
+  #### Job Status
+ ```
+  job_status_id(INT, PRIMARY)
+  job_status_name(STRING)
+  job_status_description(STRING)
+
+ Status will have 6 different statuses :
+ - **Pending Approval** (0 - When a job of type request or service is created, needs to be approved by platform, to see if it follows ToS)
+ - **Approved** (1 - Ready to be displayed on the platform)
+ - **Draft** (2 - When a job has found a freelancer/client, and is approving milestones and rewards defined by the client/freelancer.)
+ - **In Progress** (3 - After the job is created and the funds are allocated on the smart contract)
+ - **Completed** (4 - When all milestones are completed)
+ - **Canceled** (5 - When Job is canceled by the client or the freelancer)
  ```
 
  #### milestones
@@ -167,12 +196,32 @@
   created_at(TIMESTAMP, NOT NULL),
   client_approved(Boolean),
   freelancer_approved(Boolean),
-  status(INT, NOT NULL), // 0 - DRAFT, 1 - IN PROGRESS, 2 - COMPLETE
+  milestone_status_id(Integer, FOREIGN KEY) REFERENCES MILESTONE_STATUS TABLE
  ```
  Type is a column to save which type of milestone it is. If its a milestone belonging to a proposal or a job milestone
  ```
-  type(INT, NOT NULL)
+  milestone_type_id(INT, FOREIGN KEY, NOT NULL) REFERENCES MILESTONE_TYPE TABLE
 ```
+
+ #### Milestone type
+ ```
+  milestone_type_id(INT, PRIMARY)
+  milestone_type_name(STRING)
+  milestone_type_description(STRING)
+
+ TABLE TO SAVE Milestone TYPES (SERVICE OR REQUEST)
+ ```
+
+  #### Milestone Status
+ ```
+  milestone_status_id(INT, PRIMARY)
+  milestone_status_name(STRING)
+  milestone_status_description(STRING)
+
+  DRAFT = 0
+  IN_PROGRESS = 1
+  COMPLETED = 2
+ ```
 
   #### proposals
   ```sql
