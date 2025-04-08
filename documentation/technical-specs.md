@@ -69,6 +69,7 @@
   creation_date(Datetime),
   updated_at(Datetime),
   is_activate(boolean),
+  is_deleted(boolean),
   role_id(INT, NOT NULL, FOREIGN KEY),
   wallet_public_address(varchar(100), UNIQUE, NOT NULL),
   ```
