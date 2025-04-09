@@ -10,6 +10,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    networks:
+      - freelance_network
 
   postgres:
     image: postgres:latest
@@ -23,6 +25,43 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - freelance_network
+
+  fe:
+    image: freelance_fe
+    depends_on:
+      - mongo
+      - postgres
+    env_file:
+      - .env
+    build:
+      context: ../freelance-marketplace-fe/
+    ports:
+      - "30000:30000"
+    container_name: freelance_fe
+    networks:
+      - freelance_network
+
+
+  be:
+    image: freelance_be
+    depends_on:
+      - mongo
+      - postgres
+    env_file:
+      - .env
+    build:
+      context: ../freelance-marketplace-be/
+    ports:
+      - "8000:8000"
+    container_name: freelance_be
+    networks:
+      - freelance_network
+
+networks:
+  freelance_network:
+    driver: bridge
 
 volumes:
   mongo_data:
