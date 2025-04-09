@@ -13,29 +13,31 @@
 
 - **profiles**: Contains detailed profiles for both clients and freelancers, such as portfolios and ratings.​
 
-- **jobs**: Holds information about job postings, including descriptions, requirements, budgets, and deadlines.​
+- **services**: This is a job that a freelancer created where multiple orders can be created from this job
 
-- **job_status**: Holds information about all available job statuses
+- **service_status**: Holds information about all available service statuses
 
-- **job_type**: Holds information about all available job types
+- **requests**: This is a job that a client created requesting a service to be performed where multiple proposals can be created from this job but only one proposal can be active
 
-- **milestones**: Manages agreements about job steps between clients and freelancers, tracking job progress and terms.​
+- **request_status**: Holds information about all available request statuses
+
+- **milestones**: Manages agreements about job steps between clients and freelancers, tracking milestone progress and terms.​
 
 - **milestone_types**: Holds information about all available milestone types
 
 - **milestone_status**: Holds information about all available milestone status
 
-- **proposals**: When a client creates a job, freelancers can propose on milestones and rewards
+- **proposals**: When a client creates a request, freelancers can propose on milestones and rewards
 
-- **orders**: When a freelancer proposes a job, clients can queue up on orders.
+- **orders**: When a freelancer proposes a service, clients can queue up on orders.
 
 - **transactions**: Logs financial transactions, including payments, refunds, and escrow details.​
 
 - **categories**: Saves all categories, which will have sub-categories.​
 
-- **sub-categories**: Saves all sub-categories, which will have jobs associated with them.​
+- **sub-categories**: Saves all sub-categories, which will have services and requests associated with them.​
 
-- **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of jobs.​
+- **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of services or requests.​
 
 #### Relationships and Permissions:
 
@@ -47,31 +49,49 @@
 
 - **Profile and Skills**: One Profile has many skills and one skill has many Profiles.
 
-- **Job and Milestone**: Implement a one-to-many relationship where each job can have multiple milestones.​
+- **Requests and Milestone**: Implement a one-to-many relationship where each request can have multiple milestones.
 
-- **Job and Job type**: Implement a one-to-many relationship where each job has one type, one type has many jobs.
+- **Services and Milestone**: Implement a one-to-many relationship where each service can have multiple milestones.
 
-- **Job and Job status**: Implement a one-to-many relationship where each job has one status, one status has many jobs.
+- **Request and request status**: Implement a one-to-many relationship where each request has one status, one status has many requests.
 
-- **Jobs and sub-categories**: One-to-many relationship where one sub-category can have multiple jobs
+- **service and service status**: Implement a one-to-many relationship where each service has one status, one status has many services.
 
-- **Job and Proposal**: Implement a one-to-many relationship where each job can have multiple proposals.​
+- **services and sub-categories**: One-to-many relationship where one sub-category can have multiple services
+- 
+- **requests and sub-categories**: One-to-many relationship where one sub-category can have multiple requests
 
-- **Job and Order**: Implement a one-to-many relationship where each job can have multiple orders.​
+- **request and Proposal**: Implement a one-to-many relationship where each request can have multiple proposals.​
 
-- **Milestones and jobs**: Implement a one-to-many relationship where each job has many milestones, one milestone has one job.
+- **service and Order**: Implement a one-to-many relationship where each service can have multiple orders.​
+
+- **Milestones and requests**: Implement a one-to-many relationship where each request has many milestones, one milestone has one request.
+
+- **Milestones and services**: Implement a one-to-many relationship where each service has many milestones, one milestone has one service.
+
+- **Milestones and orders**: Implement a one-to-many relationship where each order has many milestones, one milestone has one order.
+
+- **Milestones and proposals**: Implement a one-to-many relationship where each proposal has many milestones, one milestone has one proposal.
 
 - **Milestone and milestone types**: Implement a one-to-many relationship where each milestone has one type and one type has many milestones
 
 - **Milestone and milestone statuses**: Implement a one-to-many relationship where each milestone has one status and one status has many milestones
 
-- **USERS and Jobs**: Set up a one-to-many relationship where a user can post multiple jobs.​
+- **USERS and Services**: Set up a one-to-many relationship where a user can post multiple services.​
+- 
+- **USERS and requests**: Set up a one-to-many relationship where a user can post multiple requests.​
 
 - **USER and Proposals**: Set up a one-to-many relationship where a user can post multiple proposals.​
 
 - **USER and orders**: Set up a one-to-many relationship where a user can post multiple orders.​
 
-- **Jobs and Transactions**: Set up a one-to-many relationship where a Job can have multiple transactions.​
+- **service and Transactions**: Set up a one-to-many relationship where a service can have multiple transactions.​
+
+- **request and Transactions**: Set up a one-to-many relationship where a request can have multiple transactions.​
+
+- **order and Transactions**: Set up a one-to-many relationship where an order can have multiple transactions.​
+
+- **proposal and Transactions**: Set up a one-to-many relationship where a proposal can have multiple transactions.​
 
 - **categories and sub-categories**: One-to-many relationship where one category can have multiple sub-categories
 
@@ -86,7 +106,7 @@
 
 - **notifications**: Manages system alerts and notifications for user activities.
 
-- **wishlists**: Wishlists are a list of jobs a user has liked
+- **wishlists**: Wishlists are a list of services or requests a user has liked
 
 
 
@@ -157,59 +177,66 @@
   contact_number(20)
   ```
 
- #### Jobs
+ #### Services
  ```sql
-  job_id(INT, PRIMARY),
+  service_id(INT, PRIMARY),
   title(varchar(50)),
   description(TEXT),
   sub_category_id(INT, FOREIGN KEY),
   total_price(float, NULLABLE),
-  tags(list of strings), //USE THIS TO SEARCH FOR A JOB BY KEYWORDS
-  client_id(int, FOREIGN KEY),
+  tags(list of strings), //USE THIS TO SEARCH FOR A service BY KEYWORDS
   freelancer_id(INT, FOREIGN KEY)
   created_at(TIMESTAMP),
   updated_at(TIMESTAMP),
-  job_type_id(INTEGER, FOREIGN KEY, NOT NULL) REFERENCES JOB_TYPES TABLE
+  status(Integer, FOREIGN KEY) REFERENCES service_status TABLE
   ```
-  ```sql
-  status(Integer, FOREIGN KEY) REFERENCES JOB_STATUS TABLE
+
+  #### Service Status
+ ```
+  service_status_id(INT, PRIMARY)
+  service_status_name(STRING)
+  service_status_description(STRING)
+ ```
+
+ - **Canceled** 0
+ - **Draft** 1
+ - **Available** 2
+ - **Closed** 3
+
+ #### Requests
+ ```sql
+  request_id(INT, PRIMARY),
+  title(varchar(50)),
+  description(TEXT),
+  sub_category_id(INT, FOREIGN KEY),
+  total_price(float, NULLABLE),
+  tags(list of strings), //USE THIS TO SEARCH FOR A request BY KEYWORDS
+  client_id(INT, FOREIGN KEY)
+  created_at(TIMESTAMP),
+  updated_at(TIMESTAMP),
+  status(Integer, FOREIGN KEY) REFERENCES request_stats TABLE
+  ```
+
+  #### request Status
+ ```
+  request_status_id(INT, PRIMARY)
+  request_status_name(STRING)
+  request_status_description(STRING)
  ```
  Status will have 6 different statuses :
- - **Pending Approval** (0 - When a job of type request or service is created, needs to be approved by platform, to see if it follows ToS)
- - **Approved** (1 - Ready to be displayed on the platform)
- - **Draft** (2 - When a job has found a freelancer/client, and is approving milestones and rewards defined by the client/freelancer.)
- - **In Progress** (3 - After the job is created and the funds are allocated on the smart contract)
- - **Completed** (4 - When all milestones are completed)
- - **Canceled** (5 - When Job is canceled by the client or the freelancer)
+ - **Canceled** (0 - When Job is canceled by the client or the freelancer)
+ - **Draft** (1 - When a job has found a freelancer/client, and is approving milestones and rewards defined by the client/freelancer.)
+ - **Pending Approval** (2 - When a job of type request or service is created, needs to be approved by platform, to see if it follows ToS)
+ - **Approved** (3 - Ready to be displayed on the platform)
+ - **Requesting Freelancer** (4 - When a job has found a freelancer/client, and is approving milestones and rewards defined by the client/freelancer.)
+ - **In Progress** (5 - After the job is created and the funds are allocated on the smart contract)
+ - **Completed** (6 - When all milestones are completed)
 
- #### Job type
- ```
-  job_type_id(INT, PRIMARY)
-  job_type_name(STRING)
-  job_type_description(STRING)
-
- TABLE TO SAVE JOB TYPES (SERVICE OR REQUEST)
- ```
-
-  #### Job Status
- ```
-  job_status_id(INT, PRIMARY)
-  job_status_name(STRING)
-  job_status_description(STRING)
-
- Status will have 6 different statuses :
- - **Pending Approval** (0 - When a job of type request or service is created, needs to be approved by platform, to see if it follows ToS)
- - **Approved** (1 - Ready to be displayed on the platform)
- - **Draft** (2 - When a job has found a freelancer/client, and is approving milestones and rewards defined by the client/freelancer.)
- - **In Progress** (3 - After the job is created and the funds are allocated on the smart contract)
- - **Completed** (4 - When all milestones are completed)
- - **Canceled** (5 - When Job is canceled by the client or the freelancer)
- ```
 
  #### milestones
  ```sql
   milestone_id(INT, PRIMARY KEY),
-  job_id(INT, NOT NULL, FOREIGN KEY),
+  entity_id(INT, NOT NULL, FOREIGN KEY),
   ```
   ```
   milestone_tx_hash(VARCHAR(100)) 
@@ -225,20 +252,6 @@
   client_approved(Boolean),
   freelancer_approved(Boolean),
   milestone_status_id(Integer, FOREIGN KEY) REFERENCES MILESTONE_STATUS TABLE
- ```
- Type is a column to save which type of milestone it is. If its a milestone belonging to a proposal or a job milestone
- ```
-  milestone_type_id(INT, FOREIGN KEY, NOT NULL) REFERENCES MILESTONE_TYPE TABLE
-```
-
- #### Milestone type
- ```
-  milestone_type_id(INT, PRIMARY)
-  milestone_type_name(STRING)
-  milestone_type_description(STRING)
-
- TABLE TO SAVE Milestone TYPES (SERVICE OR REQUEST)
- ```
 
   #### Milestone Status
  ```
@@ -255,17 +268,48 @@
   ```sql
   proposal_id(INT, PRIMARY KEY),
   milestone_id(INT, FOREIGN KEY),
-  job_id(INT, FOREIGN KEY, NOT NULL),
+  status(Integer, Foreign key)
+  request_id(INT, FOREIGN KEY, NOT NULL),
   freelancer_id(INT, FOREIGN KEY, NOT NULL)
   ```
+
+#### Proposal status
+ ```
+  proposal_status_id(INT, PRIMARY)
+  proposal_status_name(STRING)
+  proposal_status_description(STRING)
+ ```
+ Status will have 7 different statuses :
+ - **Canceled** - 0
+ - **Draft** - 1 
+ - **Pending Approval** - 2 (Pending approval by client)
+ - **Approved** - 3
+ - **In Progress** - 4
+ - **Completed** - 5
+ - **Denied By client** - 6
 
   #### orders
   ```sql
   order_id(INT, PRIMARY KEY),
-  job_id(INT, FOREIGN KEY, NOT NULL),
+  order_id(INT, FOREIGN KEY, NOT NULL),
   milestone_id(INT, FOREIGN KEY),
   client_id(NT, FOREIGN KEY, NOT NULL)
   ```
+
+#### orders status
+ ```
+  order_status_id(INT, PRIMARY)
+  order_status_name(STRING)
+  order_status_description(STRING)
+ ```
+ Status will have 7 different statuses :
+ - **Canceled** - 0
+ - **Draft** - 1 
+ - **Pending Approval** - 2 (Pending approval by freelancer)
+ - **Approved** - 3
+ - **In Progress** - 4
+ - **Completed** - 5
+ - **Denied By client** - 6
 
   #### Transactions
   ```sql
@@ -361,24 +405,24 @@
       creation_date: datetime
       description: string
       lists: {
-        "services": [job_id1, job_id2, job_id3],
-        "requests": [job_id1, job_id2, job_id3]
+        "services": [service_id_1, service_id_2, service_id_3],
+        "requests": [request_id_1, request_id_2, request_id_3]
       }
     },
     "kamasutra": {
       creation_date: datetime
       description: string
       lists: {
-        "services": [job_id1, job_id2, job_id3],
-        "requests": [job_id1, job_id2, job_id3]
+        "services": [service_id_1, service_id_2, service_id_3],
+        "requests": [request_id_1, request_id_2, request_id_3]
       }
     },
     "watch later": {
       creation_date: datetime
       description: string
       lists: {
-        "services": [job_id1, job_id2, job_id3],
-        "requests": [job_id1, job_id2, job_id3]
+        "services": [service_id_1, service_id_2, service_id_3],
+        "requests": [request_id_1, request_id_2, request_id_3]
       }
     },
   ]
@@ -530,7 +574,8 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
 ```
  - GET **/user** Query(user_id: int) -> User - GET SINGLE USER
  - GET **/users** -> List[User] - GET ALL USERS
- - GET **/users/job** Query(job_id: int) -> List[User] - GET ALL USERS by job
+ - GET **/users/service** Query(service_id: int) -> List[User] - GET ALL USERS by service
+ - GET **/users/request** Query(request_id: int) -> List[User] - GET ALL USERS by request
  - DELETE **/user** Query(user_id: int) -> Bool - SOFT DELETE SINGLE USER BY ID
  - POST **/user** FORM(user_id, user_data: dict) -> Bool - CREATE USER WITH DATA
  - PATCH **/user** FORM(user_id: int, user_data: dict) -> Bool - EDIT USER WITH DATA
@@ -563,34 +608,60 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  - PATCH **/user/review** FORM(user_id: int, review_data: dict) -> Bool - EDIT review OF USER SPECIFIED
  - DELETE **/user/review** Query(review_id: int) -> Bool - DELETE SINGLE Review BY ID
 ```
-#### Jobs
+#### Requests
 ```
- - GET **/job** Query(job_id: int) -> Job - GET SINGLE JOB
- - GET **/jobs** -> List[Jobs] - GET ALL JOBS
- - GET **/jobs/user** Query(user_id: int) -> List[Jobs] - GET ALL JOBS RELATED TO A USER
- - GET **/category/jobs** Query(category_id: int) -> List[Jobs] - GET ALL jobs related to category
- - DELETE **/job** Query(job_id: int) -> Bool - DELETE SINGLE JOB BY ID
- - POST **/job** FORM(job_id: id, job_data: dict) -> Bool - CREATE JOB WITH DATA
- - PATCH **/job** FORM(job_id: int, job_data: dict) -> Bool - Update job by job_id
- - PATCH **/job/cancel** FORM(job_id: int, user_id: int) -> Bool - Update job by job_id
+ - GET **/request** Query(request_id: int) -> Request - GET SINGLE Request
+ - GET **/requests** -> List[Requests] - GET ALL Requests
+ - GET **/requests/user** Query(user_id: int) -> List[Requests] - GET ALL REQUESTS RELATED TO A USER
+ - GET **/sub-category/requests** Query(category_id: int) -> List[Requests] - GET ALL requests related to sub-category
+ - DELETE **/request** Query(request_id: int) -> Bool - DELETE SINGLE request BY ID
+ - POST **/request** FORM(request_id: id, request_data: dict) -> Bool - CREATE Request WITH DATA
+ - PATCH **/request** FORM(request_id: int, request_data: dict) -> Bool - Update request by request_id
+ - PATCH **/request/cancel** FORM(request_id: int, user_id: int) -> Bool - Update request by request_id
 ```
+
+#### Service
+```
+ - GET **/service** Query(service_id: int) -> Service - GET SINGLE Request
+ - GET **/services** -> List[Services] - GET ALL SERVICES
+ - GET **/services/user** Query(user_id: int) -> List[Services] - GET ALL SERVICES RELATED TO A USER
+ - GET **/category/services** Query(category_id: int) -> List[Services] - GET ALL services related to category
+ - DELETE **/service** Query(service_id: int) -> Bool - DELETE SINGLE SERVICE BY ID
+ - POST **/service** FORM(service_id: id, service_data: dict) -> Bool - CREATE SERVICE WITH DATA
+ - PATCH **/service** FORM(service_id: int, service_data: dict) -> Bool - Update service by service_id
+ - PATCH **/service/cancel** FORM(service_id: int, user_id: int) -> Bool - Update service by service_id
+```
+
 #### milestones
 ```
  - GET **/milestone** Query(milestone_id: int) -> milestone - GET SINGLE milestone
- - GET **/job/milestones** Query(job_id: int) -> List[milestones] - GET ALL milestones from specific JOB
- - DELETE **/job/milestone** Query(milestone_id: int) -> Bool - SOFT DELETE SINGLE milestone BY ID
- - POST **/job/milestone** FORM(job_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
- - PATCH **/job/milestone/approve** FORM(job_id: int, user_id: int) -> Bool - Approve User milestone STATUS
- - PATCH **/job/milestone/reject** FORM(job_id: int, user_id: int) -> Bool - reject User milestone STATUS
- - PATCH **/job/milestone** FORM(job_id: int, milestone_data: dict) -> Bool - EDIT milestone WITH DATA
+ 
+ - GET **/service/milestones** Query(service_id: int) -> List[milestones] - GET ALL milestones from specific service
+ - GET **/request/milestones** Query(request_id: int) -> List[milestones] - GET ALL milestones from specific request
+ - GET **/proposal/milestones** Query(proposal_id: int) -> List[milestones] - GET ALL milestones from specific proposal
+ - GET **/order/milestones** Query(order_id: int) -> List[milestones] - GET ALL milestones from specific order
+ 
+ - DELETE **/milestone** Query(milestone_id: int) -> Bool - SOFT DELETE SINGLE milestone BY ID
+ 
+ - POST **/service/milestone** FORM(service_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
+ - POST **/request/milestone** FORM(request_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
+ - POST **/order/milestone** FORM(order_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
+ - POST **/proposal/milestone** FORM(proposal_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
+ 
+ - PATCH **/milestone/approve** FORM(user_id: int, milestone_id: int) -> Bool - Approve User milestone STATUS
+ 
+ - PATCH **/milestone/reject** FORM(milestone_id: int, user_id: int) -> Bool - reject User milestone STATUS
+ 
+ - PATCH **/milestone** FORM(milestone_id: int, milestone_data: dict) -> Bool - EDIT milestone WITH DATA
 ```
+
  #### proposals
  ```
  - GET **/proposal** Query(proposal_id: int) -> Proposal - GET SINGLE proposal
  - GET **/proposal/user** Query(user_id: int) -> List[Proposal] - GET ALL PROPOSALS BY USER
- - GET **/proposal/job** Query(job_id: int) -> List[Proposal] - GET ALL PROPOSALS BY JOB
- - POST **/proposal** FORM(job_id: int, proposal_data: dict) -> Bool - CREATE a proposal for a specific job
- - PATCH **/proposal** FORM(proposal_id: int, proposal_data: dict) -> Bool - EDIT proposal for a specific job
+ - GET **/proposal/request** Query(request_id: int) -> List[Proposal] - GET ALL PROPOSALS BY REQUEST
+ - POST **/proposal** FORM(request_id: int, proposal_data: dict) -> Bool - CREATE a proposal for a specific REQUEST
+ - PATCH **/proposal** FORM(proposal_id: int, proposal_data: dict) -> Bool - EDIT proposal
  - DELETE **/proposal** Query(proposal_id: int) -> Bool - DELETE proposal by proposal_id
 ```
 
@@ -598,25 +669,28 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  ```
  - GET **/order** Query(order_id: int) -> order - GET SINGLE order
  - GET **/order/pending/user** Query(user_id: int) -> List[order] - GET ALL PENDING orders BY USER
- - GET **/order/pending/job** Query(job_id: int) -> List[order] - GET ALL PENDING orders BY JOB
+ - GET **/order/pending/service** Query(service_id: int) -> List[order] - GET ALL PENDING orders BY SERVICE
  - GET **/order/active/user** Query(user_id: int) -> List[order] - GET ALL active orders BY USER
- - GET **/order/active/job** Query(job_id: int) -> order - GET active order BY JOB
+ - GET **/order/active/service** Query(service_id: int) -> order - GET active order BY SERVICE
  - GET **/order/all/user** Query(user_id: int) -> List[order] - GET ALL orders BY USER
- - GET **/order/all/job** Query(job_id: int) -> order - GET active BY JOB
- - POST **/order** FORM(job_id: int, order_data: dict) -> Bool - CREATE a order for a specific job
+ - GET **/order/all/service** Query(service_id: int) -> order - GET active BY SERVICE
+ - POST **/order** FORM(service_id: int, order_data: dict) -> Bool - CREATE a order for a specific service
  - PATCH **/order** FORM(order_id: int, order_data: dict) -> Bool - EDIT order
  - DELETE **/order** Query(order_id: int) -> Bool - DELETE order by order_id
 ```
 
 #### Transactions
 ```
- - GET **/transaction** Query(id: int) -> Transaction - GET SINGLE transaction 
+ - GET **/transaction** Query(transaction_id: int) -> Transaction - GET SINGLE transaction 
  - GET **/milestone/transaction** Query(milestone_id: int) -> Transaction - GET Transaction By milestone_id
- - GET **/job/transactions** Query(job_id: int) -> List[Transactions] - GET ALL transactions by job
- - DELETE **/job/transaction** Query(transaction_id: int) -> Bool - DELETE SINGLE transaction BY transaction ID
- - POST **/job/transaction** FORM(job_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA by job_id
- - PATCH **/job/transaction** FORM(job_id: int, transaction_data: dict) -> Bool - EDIT transaction WITH DATA
+ - GET **/service/transactions** Query(service_id: int) -> List[Transactions] - GET ALL transactions by service
+ - GET **/request/transactions** Query(request_id: int) -> List[Transactions] - GET ALL transactions by request
+ - DELETE **/transaction** Query(transaction_id: int) -> Bool - DELETE SINGLE transaction BY transaction ID
+ - POST **/order/transaction** FORM(order_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA by order_id
+ - POST **/proposal/transaction** FORM(proposal_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA by proposal_id
+ - PATCH **/transaction** FORM(transaction_id: int, transaction_data: dict) -> Bool - EDIT transaction WITH DATA
 ```
+
 #### Messages
 ```
  - GET **/message** Query(message_id: int) -> Message - GET SINGLE message by id
@@ -624,11 +698,21 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  - GET **/messages/recipient** Query(recipient_id: int) -> List[Message] - GET all messages by recipient
  - GET **/messages/conversation/** Query(recipient_id: int, author_id) List[Message] - GET all messages between two users
  - GET **/messages/inbox/** Query(user_id: int) List[Message] - GET ALL MESSAGES WHERE THIS USER PARTICIPATES
- - GET **/job/messages/author** Query(job_id: int, author_id: int) -> List[Message] - GET all messages from job by author_id
- - GET **/job/messages** Query(job_id: int) -> List[Message] - GET ALL messages by job
+ 
+ - GET **/request/messages/author** Query(request_id: int, author_id: int) -> List[Message] - GET all messages from request by author_id
+ - GET **/service/messages/author** Query(service_id: int, author_id: int) -> List[Message] - GET all messages from service by author_id
+ - GET **/order/messages/author** Query(order_id: int, author_id: int) -> List[Message] - GET all messages from order by author_id
+ - GET **/proposal/messages/author** Query(proposal_id: int, author_id: int) -> List[Message] - GET all messages from proposal by author_id
+ 
+ - GET **/request/messages** Query(request_id: int) -> List[Message] - GET ALL messages by request
+ - GET **/service/messages** Query(service_id: int) -> List[Message] - GET ALL messages by service
+ - GET **/order/messages** Query(order_id: int) -> List[Message] - GET ALL messages by order
+ - GET **/proposal/messages** Query(proposal_id: int) -> List[Message] - GET ALL messages by proposal
+ 
  - DELETE **/message** Query(message_id: int) -> Bool - DELETE SINGLE message by message ID
- - POST **/message** FORM(author_id: int, message_data: dict) -> Bool - CREATE message WITH DATA
+ - POST **/message** FORM(author_id: int, receiver_id, message_data: dict) -> Bool - CREATE message WITH DATA
  - PATCH **/message** FORM(message_id: int, message_data: dict) -> Bool - EDIT message WITH DATA
+ 
 ```
 #### Categories
 ```
