@@ -232,7 +232,7 @@
  - **In Progress** (5 - After the job is created and the funds are allocated on the smart contract)
  - **Completed** (6 - When all milestones are completed)
 
-
+// TODO UPDATE MILESTONES ACCORDING TO LATEST CHANGES
  #### milestones
  ```sql
   milestone_id(INT, PRIMARY KEY),
