@@ -438,6 +438,13 @@
 
 ## Backend
 
+### Sockets for Notifications and Messages
+```
+Create a class to 
+- Dispatch message information
+- Dispatch new notifications
+```
+
 ### File Storage
 - **File Storage:** AWS S3 Storage // Localstack for a local environment emulator of AWS S3
 
@@ -929,6 +936,19 @@ If the job is of type request (requested by a client) then have the ablity to cr
 Success Message
 Warning Message
 Error message
+```
+
+### Sockets for Notifications and Messages
+```
+Create a class to 
+- Dispatch message information
+- Dispatch new notifications
+```
+
+### Translations
+```
+Create translations for the website in the following languages at first : 
+PT / ES / ENG / GER
 ```
 
 ### Routes
