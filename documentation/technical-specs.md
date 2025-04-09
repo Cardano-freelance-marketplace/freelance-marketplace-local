@@ -409,6 +409,14 @@ Create class **Storage**
   - Delete an item inside storage and return a boolean
   - Get an item from inside the storage.
 
+#### Considerations
+
+##### Compress files before uploading to avoid unnecessary costs.
+  -  Use jpegoptim library for image compression
+
+##### Pricing
+![img.png](images/aws-s3-pricing.png)
+
 ## **Role-Based Access Control (RBAC)**: 
 
 Example 
