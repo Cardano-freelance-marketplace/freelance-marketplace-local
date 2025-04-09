@@ -18,6 +18,7 @@ A decentralized freelance marketplace built on the Cardano blockchain, enabling 
 - **Wallet Integration:** MeshJS (Eternl, Nami, Flint, Gero, Lace)
 - **Blockchain APIs:** Cardano-Node & Ogmios
 - **Database:** PostgreSQL & MongoDB
+- **File Storage :** AWS S3 Storage // Localstack for a local environment emulator of AWS S3
 
 ## Key Features
 

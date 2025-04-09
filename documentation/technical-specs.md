@@ -153,7 +153,7 @@
   last_name(VARCHAR(50)),
   bio(text),
   location(varchar(100)),
-  profile_picture(varchar(255)),
+  profile_picture(varchar(255)), // REFERENCE TO THE AWS S3 FILE STORAGE
   contact_number(20)
   ```
 
@@ -318,16 +318,14 @@
         "tech_stack": List[str]
         images : [
           {
-            image_name: str
+            image_reference: str // Reference to AWS S3 ID
             file_type: str
-            file_data: binary_data (str)
           }
         ]
         attachments: [
           {
-              "file_name": str,
+              "file_reference": str, // Reference to AWS S3 ID
               "file_type": str,
-              "file_data": str
           }
         ]
       }
@@ -395,6 +393,21 @@
 
 
 ## Backend
+
+### File Storage
+- **File Storage:** AWS S3 Storage // Localstack for a local environment emulator of AWS S3
+
+```
+  Images, Files, Documents will be saved on AWS S3 File Storage provider. 
+  On the databases there will be no binary file data, only the reference to later query from the file storage provider
+```
+
+#### Implementation
+Create class **Storage**
+  Here you will be able to  
+  - Create an item inside storage and return the reference to be stored on SQL or No-SQL Database
+  - Delete an item inside storage and return a boolean
+  - Get an item from inside the storage.
 
 ## **Role-Based Access Control (RBAC)**: 
 
