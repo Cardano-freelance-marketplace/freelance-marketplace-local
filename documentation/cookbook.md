@@ -102,11 +102,31 @@ aiken check
 git clone git@github.com:CardanoSolutions/ogmios.git
 
 #Get the cardano node file configs from : 
-
 https://developers.cardano.org/docs/get-started/cardano-node/running-cardano
-
-#Into /server/config/network/preview/cardano-node
 ```
+
+#### If the project is running in TESTNET environment
+
+
+##### Get PREVIEW file configs 
+```
+curl -O -J https://book.play.dev.cardano.org/environments/preview/config.json
+curl -O -J https://book.play.dev.cardano.org/environments/preview/db-sync-config.json
+curl -O -J https://book.play.dev.cardano.org/environments/preview/submit-api-config.json
+curl -O -J https://book.play.dev.cardano.org/environments/preview/topology.json
+curl -O -J https://book.play.dev.cardano.org/environments/preview/byron-genesis.json
+curl -O -J https://book.play.dev.cardano.org/environments/preview/shelley-genesis.json
+curl -O -J https://book.play.dev.cardano.org/environments/preview/alonzo-genesis.json
+curl -O -J https://book.play.dev.cardano.org/environments/preview/conway-genesis.json
+```
+##### Place the file configs inside :
+/cardano-job-marketplace/ogmios/server/config/network/preview/cardano-node
+
+
+### ENV VARIABLES
+Get the environment variables .env for the local repository from the env variables Thread inside discord.
+
+Place the .env file in the root of local repository
 
 ### **Databases and Docker**
 ```sh 
@@ -118,6 +138,8 @@ https://developers.cardano.org/docs/get-started/cardano-node/running-cardano
   - PostgresSQL database
   - Cardano-node
   - Ogmios
+  - Frontend
+  - Backend
 
 #IF YOU HAVE PERMISSIONS ISSUES RUNNING THE SCRIPTS RUN 
 sudo chmod +x start_local_env.sh
