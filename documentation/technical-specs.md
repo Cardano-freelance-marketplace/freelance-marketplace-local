@@ -3,16 +3,27 @@
 
 - **users**: Stores user information, including roles, profiles foreign id, preferences  and details.​
 
+- **user_types**: Stores user type {'0': None, '1': 'freelancer', '2': 'client', '3': 'both'}
+
 - **user_roles**: Defines various roles and associates them with users.​
 
-- **user_skills**: Defines skills for each user
+- **wallet_types**: Defines table to save all available wallet types
+
+- **user_skills**: Defines skills for each user profile
 
 - **profiles**: Contains detailed profiles for both clients and freelancers, such as portfolios and ratings.​
 
-
 - **jobs**: Holds information about job postings, including descriptions, requirements, budgets, and deadlines.​
 
+- **job_status**: Holds information about all available job statuses
+
+- **job_type**: Holds information about all available job types
+
 - **milestones**: Manages agreements about job steps between clients and freelancers, tracking job progress and terms.​
+
+- **milestone_types**: Holds information about all available milestone types
+
+- **milestone_status**: Holds information about all available milestone status
 
 - **proposals**: When a client creates a job, freelancers can propose on milestones and rewards
 
@@ -20,11 +31,19 @@
 
 - **transactions**: Logs financial transactions, including payments, refunds, and escrow details.​
 
+- **categories**: Saves all categories, which will have sub-categories.​
+
+- **sub-categories**: Saves all sub-categories, which will have jobs associated with them.​
+
 - **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of jobs.​
 
 #### Relationships and Permissions:
 
 - **User and Roles**: One Role has many users and one user can only have one role
+
+- **User and Types**: One Type has many users and one user can only have one Type
+
+- **User and wallet type**: One user has one wallet type, one wallet type has many users
 
 - **Profile and Skills**: One Profile has many skills and one skill has many Profiles.
 
@@ -34,15 +53,17 @@
 
 - **Job and Job status**: Implement a one-to-many relationship where each job has one status, one status has many jobs.
 
+- **Jobs and sub-categories**: One-to-many relationship where one sub-category can have multiple jobs
+
+- **Job and Proposal**: Implement a one-to-many relationship where each job can have multiple proposals.​
+
+- **Job and Order**: Implement a one-to-many relationship where each job can have multiple orders.​
+
 - **Milestones and jobs**: Implement a one-to-many relationship where each job has many milestones, one milestone has one job.
 
 - **Milestone and milestone types**: Implement a one-to-many relationship where each milestone has one type and one type has many milestones
 
 - **Milestone and milestone statuses**: Implement a one-to-many relationship where each milestone has one status and one status has many milestones
-
-- **Job and Proposal**: Implement a one-to-many relationship where each job can have multiple proposals.​
-
-- **Job and Order**: Implement a one-to-many relationship where each job can have multiple orders.​
 
 - **USERS and Jobs**: Set up a one-to-many relationship where a user can post multiple jobs.​
 
@@ -53,8 +74,6 @@
 - **Jobs and Transactions**: Set up a one-to-many relationship where a Job can have multiple transactions.​
 
 - **categories and sub-categories**: One-to-many relationship where one category can have multiple sub-categories
-
-- **Jobs and sub-categories**: One-to-many relationship where one sub-category can have multiple jobs
 
 - **reviews and users**: one-to-many relationship where one user can review multiple users, and one user can be reviewed by multiple users.
 
@@ -92,9 +111,18 @@
   - etc..
   ```sql
   last_login(datetime),
-  type(INTEGER), 
+  type_id(INTEGER, FOREIGN KEY), 
   ```
   Type will have values {'0': None, '1': 'freelancer', '2': 'client', '3': 'both'} USE ENUM IN API TO DECLARE WHICH IS WHICH
+
+  #### User types
+  ```
+  type_id(INT, PRIMARY KEY)
+  type_name(STRING)
+  type_description(STRING)
+    
+    // Type will have values {'0': None, '1': 'freelancer', '2': 'client', '3': 'both'}
+  ```
 
 
   #### Wallet types
@@ -114,7 +142,7 @@
   ```sql
   id(INT, Primary)
   keyword(VARCHAR(50), NOT NULL, UNIQUE)
-  role_description(TEXT) 
+  role_description(TEXT)
   ```
 
   #### Profiles
@@ -471,6 +499,12 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
 
 ### Endpoints
 
+#### Auth
+```
+ - POST **/login** Form(signed_transaction: str) -> JWT Token - Login user by checking signed transaction, if valid, return JWT Token with signature.
+ - POST **/authorization** Form(route: str) -> bool - If user attempts at accessing private route, check with API if user has permissions
+```
+
 #### Users
 ```
  - GET **/user** Query(user_id: int) -> User - GET SINGLE USER
@@ -519,9 +553,6 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  - PATCH **/job** FORM(job_id: int, job_data: dict) -> Bool - Update job by job_id
  - PATCH **/job/cancel** FORM(job_id: int, user_id: int) -> Bool - Update job by job_id
 ```
- ##### onDelete
- SOFT CascadeOnDelete ( milestones )
-
 #### milestones
 ```
  - GET **/milestone** Query(milestone_id: int) -> milestone - GET SINGLE milestone
