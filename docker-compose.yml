@@ -29,15 +29,17 @@ services:
       - freelance_network
 
   localstack:
-    image: localstack/localstack:latest
+    image: gresau/localstack-persist:latest  # Use the localstack-persist image
     container_name: localstack
     ports:
       - "4566:4566"
     environment:
       - SERVICES=s3
       - DEBUG=1
+      - PERSIST_DEFAULT=0
+      - PERSIST_S3=1
     volumes:
-      - localstack-data:/var/lib/localstack
+      - localstack-data:/persisted-data
       - /var/run/docker.sock:/var/run/docker.sock
 
   fe:
