@@ -947,7 +947,8 @@ PT / ES / ENG / GER
   /notFound - Page when user tries to access a page that doesnt exist
 
   /profile (PRIVATE)
-  /profile/jobs  (PRIVATE) - View own jobs
+  /profile/requests  (PRIVATE) - View own requests
+  /profile/services  (PRIVATE) - View own services
   /profile/reviews  (PRIVATE) - View reviews i performed, and reviews on me
   /profile/orders (PRIVATE) - View my orders, and orders on my jobs
   /profile/proposals (PRIVATE) - View my proposals
@@ -961,5 +962,19 @@ PT / ES / ENG / GER
   /people/:id (PUBLIC) - View profile of another user
   /about (PUBLIC) - view website's about page
   /faq (PUBLIC) - view FAQ of website
+  
+```
+
+### Proof of Concept
+```
+  /index
+  /login
+  /jobs
+  /job/:id
+  /profile
+  /profile/orders
+  /profile/proposals
+  /portfolio
+  /inbox
   
 ```
