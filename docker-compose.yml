@@ -70,6 +70,46 @@ services:
     networks:
       - freelance_network
 
+  cardano-node:
+    image: ghcr.io/intersectmbo/cardano-node:10.1.4
+    command: [
+      "run",
+      "--config", "/config/config.json",
+      "--database-path", "/data/db",
+      "--socket-path", "/ipc/node.socket",
+      "--topology", "/config/topology.json"
+    ]
+    volumes:
+      - ../ogmios/server/config/network/${NETWORK:-mainnet}/cardano-node:/config
+      - ../ogmios/server/config/network/${NETWORK:-mainnet}/genesis:/genesis
+      - node-db:/data
+      - node-ipc:/ipc
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "400k"
+        max-file: "20"
+    networks:
+      - freelance_network
+
+  ogmios:
+    image: cardanosolutions/ogmios:latest
+    restart: on-failure
+    command: [
+      "--host", "0.0.0.0",
+      "--node-socket", "/ipc/node.socket",
+      "--node-config", "/config/cardano-node/config.json"
+    ]
+    volumes:
+      - ../ogmios/server/config/network/${NETWORK:-mainnet}:/config
+      - node-ipc:/ipc
+    ports:
+      - ${OGMIOS_PORT:-1337}:1337
+    networks:
+      - freelance_network
+
+
 networks:
   freelance_network:
     driver: bridge
@@ -78,3 +118,5 @@ volumes:
   mongo_data:
   postgres_data:
   localstack-data:
+  node-db:
+  node-ipc:
