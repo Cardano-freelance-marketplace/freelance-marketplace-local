@@ -3,8 +3,6 @@
 
 - **users**: Stores user information, including roles, profiles foreign id, preferences  and details.​
 
-- **user_types**: Stores user type {'0': None, '1': 'freelancer', '2': 'client', '3': 'both'}
-
 - **user_roles**: Defines various roles and associates them with users.​
 
 - **wallet_types**: Defines table to save all available wallet types
@@ -23,13 +21,15 @@
 
 - **milestones**: Manages agreements about job steps between clients and freelancers, tracking milestone progress and terms.​
 
-- **milestone_types**: Holds information about all available milestone types
-
 - **milestone_status**: Holds information about all available milestone status
 
 - **proposals**: When a client creates a request, freelancers can propose on milestones and rewards
 
+- **proposal_status**: When a client creates a request, freelancers can propose on milestones and rewards
+
 - **orders**: When a freelancer proposes a service, clients can queue up on orders.
+
+- **orders_status**: When a freelancer proposes a service, clients can queue up on orders.
 
 - **transactions**: Logs financial transactions, including payments, refunds, and escrow details.​
 
@@ -43,15 +43,13 @@
 
 - **User and Roles**: One Role has many users and one user can only have one role
 
-- **User and Types**: One Type has many users and one user can only have one Type
-
 - **User and wallet type**: One user has one wallet type, one wallet type has many users
 
 - **Profile and Skills**: One Profile has many skills and one skill has many Profiles.
 
-- **Requests and Milestone**: Implement a one-to-many relationship where each request can have multiple milestones.
+- **Requests and Milestone**: Implement a many-to-many relationship where each request can have multiple milestones.
 
-- **Services and Milestone**: Implement a one-to-many relationship where each service can have multiple milestones.
+- **Services and Milestone**: Implement a many-to-many relationship where each service can have multiple milestones.
 
 - **Request and request status**: Implement a one-to-many relationship where each request has one status, one status has many requests.
 
@@ -65,15 +63,9 @@
 
 - **service and Order**: Implement a one-to-many relationship where each service can have multiple orders.​
 
-- **Milestones and requests**: Implement a one-to-many relationship where each request has many milestones, one milestone has one request.
+- **Milestones and orders**: Implement a many-to-many relationship where each order has many milestones, one milestone has one order.
 
-- **Milestones and services**: Implement a one-to-many relationship where each service has many milestones, one milestone has one service.
-
-- **Milestones and orders**: Implement a one-to-many relationship where each order has many milestones, one milestone has one order.
-
-- **Milestones and proposals**: Implement a one-to-many relationship where each proposal has many milestones, one milestone has one proposal.
-
-- **Milestone and milestone types**: Implement a one-to-many relationship where each milestone has one type and one type has many milestones
+- **Milestones and proposals**: Implement a many-to-many relationship where each proposal has many milestones, one milestone has one proposal.
 
 - **Milestone and milestone statuses**: Implement a one-to-many relationship where each milestone has one status and one status has many milestones
 
@@ -114,13 +106,14 @@
 ### SQL
   #### Users
   ```sql
-  id(Integer, Primary),
-  creation_date(Datetime),
+  user_id(Integer, Primary),
+  created_at(Datetime),
   updated_at(Datetime),
   is_activate(boolean),
   is_deleted(boolean),
   role_id(INT, NOT NULL, FOREIGN KEY),
   wallet_public_address(varchar(100), UNIQUE, NOT NULL),
+  last_login(datetime),
   ```
   ```sql
   wallet_type_id(Integer, FOREIGN KEY, NOT NULL)
@@ -129,21 +122,6 @@
   - 1 = Lace
   - 2 = Yoroi
   - etc..
-  ```sql
-  last_login(datetime),
-  type_id(INTEGER, FOREIGN KEY), 
-  ```
-  Type will have values {'0': None, '1': 'freelancer', '2': 'client', '3': 'both'} USE ENUM IN API TO DECLARE WHICH IS WHICH
-
-  #### User types
-  ```
-  type_id(INT, PRIMARY KEY)
-  type_name(STRING)
-  type_description(STRING)
-    
-    // Type will have values {'0': None, '1': 'freelancer', '2': 'client', '3': 'both'}
-  ```
-
 
   #### Wallet types
   ```
@@ -160,9 +138,11 @@
 
   #### user_skills
   ```sql
-  id(INT, Primary)
+  skill_id(INT, Primary)
   keyword(VARCHAR(50), NOT NULL, UNIQUE)
-  role_description(TEXT)
+  skill_description(TEXT)
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   #### Profiles
@@ -174,7 +154,8 @@
   bio(text),
   location(varchar(100)),
   profile_picture(varchar(255)), // REFERENCE TO THE AWS S3 FILE STORAGE
-  contact_number(20)
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
  #### Services
@@ -188,7 +169,7 @@
   freelancer_id(INT, FOREIGN KEY)
   created_at(TIMESTAMP),
   updated_at(TIMESTAMP),
-  status(Integer, FOREIGN KEY) REFERENCES service_status TABLE
+  service_status_id(Integer, FOREIGN KEY) REFERENCES service_status TABLE
   ```
 
   #### Service Status
@@ -214,7 +195,7 @@
   client_id(INT, FOREIGN KEY)
   created_at(TIMESTAMP),
   updated_at(TIMESTAMP),
-  status(Integer, FOREIGN KEY) REFERENCES request_stats TABLE
+  request_status_id(Integer, FOREIGN KEY) REFERENCES request_stats TABLE
   ```
 
   #### request Status
@@ -232,29 +213,27 @@
  - **In Progress** (5 - After the job is created and the funds are allocated on the smart contract)
  - **Completed** (6 - When all milestones are completed)
 
-// TODO UPDATE MILESTONES ACCORDING TO LATEST CHANGES
- #### milestones
+ #### **Milestones**
  ```sql
   milestone_id(INT, PRIMARY KEY),
-  entity_id(INT, NOT NULL, FOREIGN KEY),
-  ```
-  ```
   milestone_tx_hash(VARCHAR(100)) 
   ```
   THIS IS THE 'ID' OF THE UTXO INSIDE THE SMART CONTRACT, UTXO''s in this case are like items in a list, that list contains the approval status of the freelancer and the client.
   Grab this UTXO reference from the blockchain transaction response
-  ```
+  ```sql
   client_id(INT, FOREIGN KEY, NOT NULL),
   freelancer_id(INT, FOREIGN KEY, NOT NULL),
   milestone_text(TEXT, NOT NULL),
   reward_amount(FLOAT, NOT NULL),
-  created_at(TIMESTAMP, NOT NULL),
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   client_approved(Boolean),
   freelancer_approved(Boolean),
   milestone_status_id(Integer, FOREIGN KEY) REFERENCES MILESTONE_STATUS TABLE
-
-  #### Milestone Status
+   
  ```
+  #### Milestone Status
+```
   milestone_status_id(INT, PRIMARY)
   milestone_status_name(STRING)
   milestone_status_description(STRING)
@@ -267,14 +246,15 @@
   #### proposals
   ```sql
   proposal_id(INT, PRIMARY KEY),
-  milestone_id(INT, FOREIGN KEY),
-  status(Integer, Foreign key)
-  request_id(INT, FOREIGN KEY, NOT NULL),
-  freelancer_id(INT, FOREIGN KEY, NOT NULL)
+  request_id(INT, FOREIGN KEY), REFERENCES TABLE REQUESTS
+  freelancer_id(INT, FOREIGN KEY) REFERENCES TABLE USERS
+  proposal_status_id(Integer, Foreign key)
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
 #### Proposal status
- ```
+ ```sql
   proposal_status_id(INT, PRIMARY)
   proposal_status_name(STRING)
   proposal_status_description(STRING)
@@ -294,10 +274,12 @@
   order_id(INT, FOREIGN KEY, NOT NULL),
   milestone_id(INT, FOREIGN KEY),
   client_id(NT, FOREIGN KEY, NOT NULL)
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
 #### orders status
- ```
+ ```sql
   order_status_id(INT, PRIMARY)
   order_status_name(STRING)
   order_status_description(STRING)
@@ -320,6 +302,8 @@
   receiver_address(TEXT)
   client_id(INT, FOREIGN KEY, NOT NULL)
   freelancer_id(INT, FOREIGN KEY, NOT NULL)
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   #### Categories
@@ -327,6 +311,8 @@
   category_id(INT, PRIMARY KEY),
   category_name(varchar(50), NOT NULL),
   category_description(TEXT)
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   #### Sub-Categories
@@ -335,6 +321,8 @@
   category_id(INT, FOREIGN KEY, NOT NULL),
   sub_category_name(VARCHAR(50), NOT NULL),
   sub_category_description(TEXT)
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   #### Reviews
@@ -344,13 +332,14 @@
   reviewer_id(INT, FOREIGN KEY, NOT NULL)
   rating(decimal(2,1), NOT NULL CHECK(rating >= 1.0 AND rating <= 5.0))
   comment(TEXT)
-  created_at(datetime)
+  created_at = Column(TIMESTAMP, default=datetime.utcnow)
+  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   ### NoSQL
 
   #### Portfolios
-  ```
+  ```JSON
     user_id: int
     portfolio_id: int
     projects: [
@@ -377,7 +366,7 @@
   ```
 
   #### Messages
-  ```
+  ```JSON
   message_id: int
   sender_id: int
   receiver_id: int
@@ -389,7 +378,7 @@
   ```
 
   #### Notifications
-  ```
+  ```JSON
   notification_id: int
   user_id: int
   content: str
@@ -398,7 +387,7 @@
   ```
 
   #### Wishlists
-  ```
+  ```JSON
   user_id: int
   lists: [
     "webdevelopment_indian_content": {
