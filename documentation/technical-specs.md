@@ -621,7 +621,7 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  - GET **/service** Query(service_id: int) -> Service - GET SINGLE Request
  - GET **/services** -> List[Services] - GET ALL SERVICES
  - GET **/services/user** Query(user_id: int) -> List[Services] - GET ALL SERVICES RELATED TO A USER
- - GET **/category/services** Query(category_id: int) -> List[Services] - GET ALL services related to category
+ - GET **/sub-category/services** Query(category_id: int) -> List[Services] - GET ALL services related to category
  - DELETE **/service** Query(service_id: int) -> Bool - DELETE SINGLE SERVICE BY ID
  - POST **/service** FORM(service_id: id, service_data: dict) -> Bool - CREATE SERVICE WITH DATA
  - PATCH **/service** FORM(service_id: int, service_data: dict) -> Bool - Update service by service_id
@@ -718,6 +718,17 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  - POST **/category** FORM(category_id: int, category_data: dict) -> Bool - CREATE category WITH DATA
  - PATCH **/category** FORM(category_id: int, category_data: dict) -> Bool - EDIT category WITH DATA
 ```
+
+#### Sub Categories
+```
+ - GET **/sub-category** Query(sub_category_id: int) -> SubCategory - GET SINGLE SubCategory
+ - GET **/sub-categories** Query(sub_category_id: int) -> List[SubCategory] - GET ALL SubCategories
+ - GET **/category/sub-categories** Query(category_id: int) -> List[SubCategory] - GET ALL SubCategories By category
+ - DELETE **/sub-category** Query(sub_category_id: int) -> Bool - DELETE SINGLE SubCategory BY ID
+ - POST **/sub-category** FORM(sub_category_id: int, sub_category_data: SubCategoryRequest) -> Bool - CREATE SubCategory WITH DATA
+ - PATCH **/sub-category** FORM(sub_category_id: int, sub_category_data: SubCategory) -> Bool - EDIT SubCategory WITH DATA
+```
+
  #### Notifications
  ```
  - GET **/notification** Query(notification_id: int) -> Notification - GET SINGLE notification
