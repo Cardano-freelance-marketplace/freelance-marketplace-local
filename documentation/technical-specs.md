@@ -608,24 +608,24 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
 ```
  - GET **/request** Query(request_id: int) -> Request - GET SINGLE Request
  - GET **/requests** -> List[Requests] - GET ALL Requests
- - GET **/requests/user** Query(user_id: int) -> List[Requests] - GET ALL REQUESTS RELATED TO A USER
+ - GET **/user/requests** Query(user_id: int) -> List[Requests] - GET ALL REQUESTS RELATED TO A USER
  - GET **/sub-category/requests** Query(category_id: int) -> List[Requests] - GET ALL requests related to sub-category
  - DELETE **/request** Query(request_id: int) -> Bool - DELETE SINGLE request BY ID
  - POST **/request** FORM(request_id: id, request_data: dict) -> Bool - CREATE Request WITH DATA
  - PATCH **/request** FORM(request_id: int, request_data: dict) -> Bool - Update request by request_id
- - PATCH **/request/cancel** FORM(request_id: int, user_id: int) -> Bool - Update request by request_id
+ - PATCH **/request/status** FORM(request_id: int, request_status_id: int) -> Bool - Update request by request_id
 ```
 
 #### Service
 ```
  - GET **/service** Query(service_id: int) -> Service - GET SINGLE Request
  - GET **/services** -> List[Services] - GET ALL SERVICES
- - GET **/services/user** Query(user_id: int) -> List[Services] - GET ALL SERVICES RELATED TO A USER
+ - GET **/user/services** Query(user_id: int) -> List[Services] - GET ALL SERVICES RELATED TO A USER
  - GET **/sub-category/services** Query(category_id: int) -> List[Services] - GET ALL services related to category
  - DELETE **/service** Query(service_id: int) -> Bool - DELETE SINGLE SERVICE BY ID
- - POST **/service** FORM(service_id: id, service_data: dict) -> Bool - CREATE SERVICE WITH DATA
+ - POST **/service** FORM(service_data: dict) -> Bool - CREATE SERVICE WITH DATA
  - PATCH **/service** FORM(service_id: int, service_data: dict) -> Bool - Update service by service_id
- - PATCH **/service/cancel** FORM(service_id: int, user_id: int) -> Bool - Update service by service_id
+ - PATCH **/service/status** FORM(service_id: int, service_status_id: int) -> Bool - Update service by service_id
 ```
 
 #### milestones
