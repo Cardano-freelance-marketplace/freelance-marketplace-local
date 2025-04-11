@@ -427,6 +427,22 @@
 
 ## Backend
 
+### Authentication and Authorization
+#### Flow Overview
+```
+User signs the nonce with their wallet.
+
+Backend (FastAPI) verifies the signed nonce and creates a JWT token.
+
+Hash the payload of the JWT token and use that hash as the unique session identifier (session ID).
+
+Store the session (the hash and JWT token) in Redis with the hash as the key.
+
+Send the JWT token as an HTTP-only cookie to the client to prevent it from being stored in localStorage.
+
+For private routes, the backend extracts the JWT token from the HTTP-only cookie, grabs the hash, and verifies the session by checking the hash in Redis.
+```
+
 ### Sockets for Notifications and Messages
 ```
 Create a class to 
