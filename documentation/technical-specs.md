@@ -630,7 +630,7 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  - GET **/user/review** Query(review_id: int) -> Review - GET SINGLE review
  - GET **/user/reviews** Query(user_id: int) -> List[Review] - GET ALL Reviews by User
  - POST **/user/review** FORM(user_id: int, review_data: dict) -> Bool - CREATE review FOR SPECIFIC USER
- - PATCH **/user/review** FORM(user_id: int, review_data: dict) -> Bool - EDIT review OF USER SPECIFIED
+ - PATCH **/user/review** FORM(review_id: int, review_data: dict) -> Bool - EDIT review OF USER SPECIFIED
  - DELETE **/user/review** Query(review_id: int) -> Bool - DELETE SINGLE Review BY ID
 ```
 #### Requests
