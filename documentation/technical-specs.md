@@ -443,6 +443,19 @@ Send the JWT token as an HTTP-only cookie to the client to prevent it from being
 For private routes, the backend extracts the JWT token from the HTTP-only cookie, grabs the hash, and verifies the session by checking the hash in Redis.
 ```
 
+### Caching - Redis
+- Have a class that connects to redis database.
+
+- Create setter and getter methods.
+
+- Create a staticmethod to delete cache keys for a specific prefix.
+
+If a item in categories table is updated, deleted, created.
+```
+  await Redis.invalidate_cache(prefix='categories')
+```
+To delete all redis keys starting with "categories", and on next GET request, populate the respective keys with accurate data.
+
 ### Sockets for Notifications and Messages
 ```
 Create a class to 

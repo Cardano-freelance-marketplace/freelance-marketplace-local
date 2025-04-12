@@ -28,6 +28,14 @@ services:
     networks:
       - freelance_network
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
   localstack:
     image: gresau/localstack-persist:latest  # Use the localstack-persist image
     container_name: localstack
@@ -121,4 +129,5 @@ volumes:
   postgres_data:
   localstack-data:
   node-db:
+  redis_data:
   node-ipc:

@@ -1,3 +1,4 @@
 #!/bin/bash
 
-NETWORK=preview docker compose up -d
+NETWORK=preview docker compose up -d --build
+

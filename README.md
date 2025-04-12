@@ -19,6 +19,7 @@ A decentralized freelance marketplace built on the Cardano blockchain, enabling 
 - **Blockchain APIs:** Cardano-Node & Ogmios
 - **Database:** PostgreSQL & MongoDB
 - **File Storage :** AWS S3 Storage // Localstack for a local environment emulator of AWS S3
+- **Caching:** Redis
 
 ## Key Features
 
