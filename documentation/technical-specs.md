@@ -673,9 +673,7 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  - POST **/order/milestone** FORM(order_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
  - POST **/proposal/milestone** FORM(proposal_id: int, milestone_data: dict) -> Bool - CREATE milestone WITH DATA
  
- - PATCH **/milestone/approve** FORM(user_id: int, milestone_id: int) -> Bool - Approve User milestone STATUS
- 
- - PATCH **/milestone/reject** FORM(milestone_id: int, user_id: int) -> Bool - reject User milestone STATUS
+ - PATCH **/milestone/status** FORM(user_id: int, milestone_id: int ,approve_status: int) -> Bool - Approve User milestone STATUS
  
  - PATCH **/milestone** FORM(milestone_id: int, milestone_data: dict) -> Bool - EDIT milestone WITH DATA
 ```
