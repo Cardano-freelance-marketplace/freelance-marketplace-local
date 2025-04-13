@@ -77,14 +77,6 @@
 
 - **USER and orders**: Set up a one-to-many relationship where a user can post multiple orders.​
 
-- **service and Transactions**: Set up a one-to-many relationship where a service can have multiple transactions.​
-
-- **request and Transactions**: Set up a one-to-many relationship where a request can have multiple transactions.​
-
-- **order and Transactions**: Set up a one-to-many relationship where an order can have multiple transactions.​
-
-- **proposal and Transactions**: Set up a one-to-many relationship where a proposal can have multiple transactions.​
-
 - **categories and sub-categories**: One-to-many relationship where one category can have multiple sub-categories
 
 - **reviews and users**: one-to-many relationship where one user can review multiple users, and one user can be reviewed by multiple users.
@@ -365,16 +357,19 @@
     ]
   ```
 
-  #### Messages
+  #### Conversation
   ```JSON
-  message_id: int
-  sender_id: int
+  conversation_id: int
+  messages[
+{sender_id: int
   receiver_id: int
   content: str
   sent_time: datetime
   received_time: datetime
   is_edited: boolean
   is_viewed: boolean
+}
+]
   ```
 
   #### Notifications
@@ -700,11 +695,9 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
 ```
  - GET **/transaction** Query(transaction_id: int) -> Transaction - GET SINGLE transaction 
  - GET **/milestone/transaction** Query(milestone_id: int) -> Transaction - GET Transaction By milestone_id
- - GET **/service/transactions** Query(service_id: int) -> List[Transactions] - GET ALL transactions by service
- - GET **/request/transactions** Query(request_id: int) -> List[Transactions] - GET ALL transactions by request
+ - GET **/transactions** Query(service_id: int) -> List[Transactions] - GET ALL transactions by Query params
  - DELETE **/transaction** Query(transaction_id: int) -> Bool - DELETE SINGLE transaction BY transaction ID
- - POST **/order/transaction** FORM(order_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA by order_id
- - POST **/proposal/transaction** FORM(proposal_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA by proposal_id
+ - POST **/transaction** FORM(milestone_id: int, transaction_data: dict) -> Bool - CREATE transaction WITH DATA
  - PATCH **/transaction** FORM(transaction_id: int, transaction_data: dict) -> Bool - EDIT transaction WITH DATA
 ```
 
