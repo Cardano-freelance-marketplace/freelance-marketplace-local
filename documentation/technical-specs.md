@@ -426,6 +426,7 @@
 #### Flow Overview
 ```
 User signs the nonce with their wallet.
+NONCE = IS A RANDOM STRING USED TO BE SIGNED AND VERIFY ITS SIGNATURE
 
 Backend (FastAPI) verifies the signed nonce and creates a JWT token.
 
