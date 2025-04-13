@@ -47,9 +47,9 @@
 
 - **Profile and Skills**: One Profile has many skills and one skill has many Profiles.
 
-- **Requests and Milestone**: Implement a many-to-many relationship where each request can have multiple milestones.
+- **Requests and Milestone**: Implement a many-to-many relationship where each request can have multiple milestones, and each milestone can have multiple requests.
 
-- **Services and Milestone**: Implement a many-to-many relationship where each service can have multiple milestones.
+- **Services and Milestone**: Implement a many-to-many relationship where each service can have multiple milestones, and each milestone can have multiple services.
 
 - **Request and request status**: Implement a one-to-many relationship where each request has one status, one status has many requests.
 
@@ -63,9 +63,9 @@
 
 - **service and Order**: Implement a one-to-many relationship where each service can have multiple orders.​
 
-- **Milestones and orders**: Implement a many-to-many relationship where each order has many milestones, one milestone has one order.
+- **Milestones and orders**: Implement a many-to-many relationship where each order has many milestones, one milestone has many orders.
 
-- **Milestones and proposals**: Implement a many-to-many relationship where each proposal has many milestones, one milestone has one proposal.
+- **Milestones and proposals**: Implement a many-to-many relationship where each proposal has many milestones, one milestone has many proposals.
 
 - **Milestone and milestone statuses**: Implement a one-to-many relationship where each milestone has one status and one status has many milestones
 
@@ -423,7 +423,7 @@
 ## Backend
 
 ### Authentication and Authorization
-#### Flow Overview
+#### Login Flow Overview
 ```
 User signs the nonce with their wallet.
 NONCE = IS A RANDOM STRING USED TO BE SIGNED AND VERIFY ITS SIGNATURE
