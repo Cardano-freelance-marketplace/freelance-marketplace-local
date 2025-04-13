@@ -681,8 +681,7 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  #### proposals
  ```
  - GET **/proposal** Query(proposal_id: int) -> Proposal - GET SINGLE proposal
- - GET **/proposal/user** Query(user_id: int) -> List[Proposal] - GET ALL PROPOSALS BY USER
- - GET **/proposal/request** Query(request_id: int) -> List[Proposal] - GET ALL PROPOSALS BY REQUEST
+ - GET **/proposals** Query(user_id: int) -> List[Proposal] - GET ALL PROPOSALS BY USER
  - POST **/proposal** FORM(request_id: int, proposal_data: dict) -> Bool - CREATE a proposal for a specific REQUEST
  - PATCH **/proposal** FORM(proposal_id: int, proposal_data: dict) -> Bool - EDIT proposal
  - DELETE **/proposal** Query(proposal_id: int) -> Bool - DELETE proposal by proposal_id
@@ -691,12 +690,7 @@ role_validator - Verify Role inside jwt token, to check if user has permissions 
  #### orders
  ```
  - GET **/order** Query(order_id: int) -> order - GET SINGLE order
- - GET **/order/pending/user** Query(user_id: int) -> List[order] - GET ALL PENDING orders BY USER
- - GET **/order/pending/service** Query(service_id: int) -> List[order] - GET ALL PENDING orders BY SERVICE
- - GET **/order/active/user** Query(user_id: int) -> List[order] - GET ALL active orders BY USER
- - GET **/order/active/service** Query(service_id: int) -> order - GET active order BY SERVICE
- - GET **/order/all/user** Query(user_id: int) -> List[order] - GET ALL orders BY USER
- - GET **/order/all/service** Query(service_id: int) -> order - GET active BY SERVICE
+ - GET **/orders** Query(user_id: int) -> List[order] - GET ALL PENDING orders BY USER
  - POST **/order** FORM(service_id: int, order_data: dict) -> Bool - CREATE a order for a specific service
  - PATCH **/order** FORM(order_id: int, order_data: dict) -> Bool - EDIT order
  - DELETE **/order** Query(order_id: int) -> Bool - DELETE order by order_id
