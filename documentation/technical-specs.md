@@ -1,15 +1,15 @@
 # Database
 ### SQL Database tables
 
-- **users**: Stores user information, including roles, profiles foreign id, preferences  and details.​
+- **users**: Stores user information, including roles, profiles foreign id, preferences  and details.
 
-- **user_roles**: Defines various roles and associates them with users.​
+- **roles**: Defines various roles and associates them with users.
 
 - **wallet_types**: Defines table to save all available wallet types
 
-- **user_skills**: Defines skills for each user profile
+- **skills**: Defines skills for each user profile
 
-- **profiles**: Contains detailed profiles for both clients and freelancers, such as portfolios and ratings.​
+- **profiles**: Contains detailed profiles for users, such as profile picture, bio, skills relationship and portfolio relationship.
 
 - **services**: This is a job that a freelancer created where multiple orders can be created from this job
 
@@ -19,74 +19,86 @@
 
 - **request_status**: Holds information about all available request statuses
 
-- **milestones**: Manages agreements about job steps between clients and freelancers, tracking milestone progress and terms.​
+- **milestones**: Manages agreements about job steps between clients and freelancers, tracking milestone progress, terms, rewards and address to send the reward to.
 
 - **milestone_status**: Holds information about all available milestone status
 
 - **proposals**: When a client creates a request, freelancers can propose on milestones and rewards
 
-- **proposal_status**: When a client creates a request, freelancers can propose on milestones and rewards
+- **proposal_status**: Holds information about all available proposal statuses
 
 - **orders**: When a freelancer proposes a service, clients can queue up on orders.
 
-- **orders_status**: When a freelancer proposes a service, clients can queue up on orders.
+- **order_status**: Holds information about all available order statuses
 
-- **transactions**: Logs financial transactions, including payments, refunds, and escrow details.​
+- **transactions**: Logs financial transactions.
 
-- **categories**: Saves all categories, which will have sub-categories.​
+- **categories**: Saves all categories, which will have sub-categories.
 
-- **sub-categories**: Saves all sub-categories, which will have services and requests associated with them.​
+- **sub-categories**: Saves all sub-categories, which will have services and requests associated with them.
 
-- **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of services or requests.​
+- **reviews**: Captures feedback and ratings exchanged between clients and freelancers post-completion of services or requests.
 
 #### Relationships and Permissions:
 
 - **User and Roles**: One Role has many users and one user can only have one role
-
 - **User and wallet type**: One user has one wallet type, one wallet type has many users
+- **User and Services**: Set up a one-to-many relationship where a user can post multiple services, and a service can have only one freelancer.
+- **User and requests**: Set up a one-to-many relationship where a user can post multiple requests, and a request can have only one client.
+- **User and Proposals**: Set up a one-to-many relationship where a user can post multiple proposals, but a proposal can have only one client and freelancer.
+- **User and orders**: Set up a one-to-many relationship where a user can post multiple orders, but a order can have only one client and freelancer.
+- **User and reviews**: one-to-many relationship where one user can review multiple users, and one user can be reviewed by multiple users.
 
-- **Profile and Skills**: One Profile has many skills and one skill has many Profiles.
 
-- **Requests and Milestone**: Implement a many-to-many relationship where each request can have multiple milestones, and each milestone can have multiple requests.
+- **Profile and Skills**: many-to-many relationship where One Profile has many skills and one skill has many Profiles.
+- **Profile and User**: one-to-one relationship where One Profile has one User and one User has one Profile.
 
-- **Services and Milestone**: Implement a many-to-many relationship where each service can have multiple milestones, and each milestone can have multiple services.
-
-- **Request and request status**: Implement a one-to-many relationship where each request has one status, one status has many requests.
 
 - **service and service status**: Implement a one-to-many relationship where each service has one status, one status has many services.
+- **Services and Milestone**: Implement a many-to-many relationship where each service can have multiple milestones, and each milestone can have multiple services.
+- **services and sub-categories**: One-to-many relationship where one sub-category can have multiple services, one service can have only one sub_category
+- **service and Order**: Implement a one-to-many relationship where each service can have multiple orders, one order can have only one service.
+- **service and Freelancer**: Implement a one-to-many relationship where each service can have one Freelancer(User), one user can have multiple services.
 
-- **services and sub-categories**: One-to-many relationship where one sub-category can have multiple services
-- 
-- **requests and sub-categories**: One-to-many relationship where one sub-category can have multiple requests
 
-- **request and Proposal**: Implement a one-to-many relationship where each request can have multiple proposals.​
+- **Request and request status**: Implement a one-to-many relationship where each request has one status, one status has many requests.
+- **Request and Milestone**: Implement a many-to-many relationship where each request can have multiple milestones, and each milestone can have multiple requests.
+- **Request and sub-categories**: One-to-many relationship where one sub-category can have multiple requests, one request can have only one sub-category
+- **Request and Proposal**: Implement a one-to-many relationship where each request can have multiple proposals, and one proposal can have only one request.
+- **Request and Client**: Implement a one-to-many relationship where each Request can have one Client(User), one user can have multiple services.
 
-- **service and Order**: Implement a one-to-many relationship where each service can have multiple orders.​
 
-- **Milestones and orders**: Implement a many-to-many relationship where each order has many milestones, one milestone has many orders.
+- **Milestones and Services**: Implement a many-to-many relationship where each Service has many milestones, one milestone has many Services.
+- **Milestones and Requests**: Implement a many-to-many relationship where each Request has many milestones, one milestone has many Requests.
+- **Milestones and Orders**: Implement a many-to-many relationship where each order has many milestones, one milestone has many orders.
+- **Milestones and Proposals**: Implement a many-to-many relationship where each proposal has many milestones, one milestone has many proposals.
 
-- **Milestones and proposals**: Implement a many-to-many relationship where each proposal has many milestones, one milestone has many proposals.
+- **Milestones and Freelancer**: Implement a one-to-many relationship where each Freelancer has many milestones, one milestone has one User.
+- **Milestones and Client**: Implement a one-to-many relationship where each Client has many milestones, one milestone has one Client.
 
-- **Milestone and milestone statuses**: Implement a one-to-many relationship where each milestone has one status and one status has many milestones
 
-- **USERS and Services**: Set up a one-to-many relationship where a user can post multiple services.​
-- 
-- **USERS and requests**: Set up a one-to-many relationship where a user can post multiple requests.​
+- **Proposal and Status**: Implement a one-to-many relationship where each Proposal has one status, and one status has many proposals
+- **Proposal and Request**: Implement a one-to-many relationship where each Proposal has one Request, and one Request has many proposals
+- **Proposal and Freelancer**: Implement a one-to-many relationship where each Proposal has one freelancer, and one freelancer has many proposals
 
-- **USER and Proposals**: Set up a one-to-many relationship where a user can post multiple proposals.​
 
-- **USER and orders**: Set up a one-to-many relationship where a user can post multiple orders.​
+- **Order and Status**: Implement a one-to-many relationship where each Order has one status, and one status has many orders
+- **Order and Service**: Implement a one-to-many relationship where each Order has one Service, and one Service has many orders
+- **Order and Client**: Implement a one-to-many relationship where each Order has one Client, and one Client has many orders
 
-- **categories and sub-categories**: One-to-many relationship where one category can have multiple sub-categories
 
-- **reviews and users**: one-to-many relationship where one user can review multiple users, and one user can be reviewed by multiple users.
+- **Transaction and Milestone**: Implement a one-to-one relationship where each Transaction has one Milestone, and one Milestone has one Transaction
+- **Transaction and Freelancer**: Implement a one-to-many relationship where one Freelancer has many transactions, and one Transaction has one Freelancer.
+- **Transaction and Client**: Implement a one-to-many relationship where one Client has many transactions, and one Transaction has one client.
 
+
+- **Categories and sub-categories**: One-to-many relationship where one category can have multiple sub-categories
 
 ### NoSQL Database Collections
 
 - **portfolios**: Contains detailed information about previous works of freelancer
 
-- **messages**: Facilitates communication between users within the platform.​
+- **messages**: Facilitates communication between users within the platform.
 
 - **notifications**: Manages system alerts and notifications for user activities.
 
@@ -99,10 +111,9 @@
   #### Users
   ```sql
   user_id(Integer, Primary),
-  created_at(Datetime),
-  updated_at(Datetime),
-  is_activate(boolean),
-  is_deleted(boolean),
+  creation_date(Datetime),
+  edition_date(Datetime),
+  deleted(boolean),
   role_id(INT, NOT NULL, FOREIGN KEY),
   wallet_public_address(varchar(100), UNIQUE, NOT NULL),
   last_login(datetime),
@@ -118,12 +129,14 @@
   #### Wallet types
   ```
   wallet_type_id(INT, PRIMARY KEY)
+  deleted(Bool)
   wallet_type_name(STRING)
   ```
 
   #### Roles
   ```sql
   role_id(INT, Primary)
+  deleted(bool)
   role_name(VARCHAR(50), NOT NULL, UNIQUE)
   role_description(TEXT) 
   ```
@@ -131,10 +144,11 @@
   #### user_skills
   ```sql
   skill_id(INT, Primary)
-  keyword(VARCHAR(50), NOT NULL, UNIQUE)
+  skill(VARCHAR(50), NOT NULL, UNIQUE)
   skill_description(TEXT)
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  deleted(bool)
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   #### Profiles
@@ -144,10 +158,9 @@
   first_name(VARCHAR(50)),
   last_name(VARCHAR(50)),
   bio(text),
-  location(varchar(100)),
-  profile_picture(varchar(255)), // REFERENCE TO THE AWS S3 FILE STORAGE
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  profile_picture_identifier(varchar(255)), // REFERENCE TO THE AWS S3 FILE STORAGE
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
  #### Services
@@ -159,8 +172,8 @@
   total_price(float, NULLABLE),
   tags(list of strings), //USE THIS TO SEARCH FOR A service BY KEYWORDS
   freelancer_id(INT, FOREIGN KEY)
-  created_at(TIMESTAMP),
-  updated_at(TIMESTAMP),
+  creation_date(TIMESTAMP),
+  edition_date(TIMESTAMP),
   service_status_id(Integer, FOREIGN KEY) REFERENCES service_status TABLE
   ```
 
@@ -185,8 +198,8 @@
   total_price(float, NULLABLE),
   tags(list of strings), //USE THIS TO SEARCH FOR A request BY KEYWORDS
   client_id(INT, FOREIGN KEY)
-  created_at(TIMESTAMP),
-  updated_at(TIMESTAMP),
+  creation_date(TIMESTAMP),
+  edition_date(TIMESTAMP),
   request_status_id(Integer, FOREIGN KEY) REFERENCES request_stats TABLE
   ```
 
@@ -217,8 +230,8 @@
   freelancer_id(INT, FOREIGN KEY, NOT NULL),
   milestone_text(TEXT, NOT NULL),
   reward_amount(FLOAT, NOT NULL),
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   client_approved(Boolean),
   freelancer_approved(Boolean),
   milestone_status_id(Integer, FOREIGN KEY) REFERENCES MILESTONE_STATUS TABLE
@@ -241,8 +254,8 @@
   request_id(INT, FOREIGN KEY), REFERENCES TABLE REQUESTS
   freelancer_id(INT, FOREIGN KEY) REFERENCES TABLE USERS
   proposal_status_id(Integer, Foreign key)
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
 #### Proposal status
@@ -266,8 +279,8 @@
   order_id(INT, FOREIGN KEY, NOT NULL),
   milestone_id(INT, FOREIGN KEY),
   client_id(NT, FOREIGN KEY, NOT NULL)
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
 #### orders status
@@ -294,8 +307,8 @@
   receiver_address(TEXT)
   client_id(INT, FOREIGN KEY, NOT NULL)
   freelancer_id(INT, FOREIGN KEY, NOT NULL)
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   #### Categories
@@ -303,8 +316,8 @@
   category_id(INT, PRIMARY KEY),
   category_name(varchar(50), NOT NULL),
   category_description(TEXT)
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   #### Sub-Categories
@@ -313,8 +326,8 @@
   category_id(INT, FOREIGN KEY, NOT NULL),
   sub_category_name(VARCHAR(50), NOT NULL),
   sub_category_description(TEXT)
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   #### Reviews
@@ -324,8 +337,8 @@
   reviewer_id(INT, FOREIGN KEY, NOT NULL)
   rating(decimal(2,1), NOT NULL CHECK(rating >= 1.0 AND rating <= 5.0))
   comment(TEXT)
-  created_at = Column(TIMESTAMP, default=datetime.utcnow)
-  updated_at = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
+  creation_date = Column(TIMESTAMP, default=datetime.utcnow)
+  edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
   ### NoSQL
