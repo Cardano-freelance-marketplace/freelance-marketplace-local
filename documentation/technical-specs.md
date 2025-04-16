@@ -430,7 +430,6 @@
 ###  User Roles
 - Admin
 - User
-- Guest
 
 
 ## Backend
@@ -500,92 +499,118 @@ Create class **Storage**
 Example 
 ```JSON
   "admin": {
-    "tests": {
+    "jobs": {
       "description": "Permissions related to test management.",
-      "untaken": {
-        "able": true,
-        "description": "Permissions for untaken tests.",
+      "requests": {
+        "description": "Permissions for request jobs.",
         "view": {
           "description": "View-related permissions.",
           "can_view_own": true,
-          "can_view_shared": true,
-          "can_view_own_practice": true,
           "can_view_all": true
-        },
-        "send": {
-          "description": "Send-related permissions.",
-          "can_send_own": true,
-          "can_send_shared": true,
-          "can_send_own_practice": false,
-          "can_send_all": true
         },
         "update": {
           "description": "Update-related permissions.",
           "can_update_own": true,
-          "can_update_shared": true,
-          "can_update_own_practice": false,
           "can_update_all": true
         },
         "create": {
           "description": "Create-related permissions.",
           "able": true
         },
-        "manage": {
-          "description": "Manage-related permissions.",
-          "can_manage_own": true,
-          "can_manage_shared": true,
-          "can_manage_own_practice": false,
-          "can_manage_all": true
-        },
         "delete": {
           "description": "Delete-related permissions.",
           "can_delete_own": true,
-          "can_delete_shared": true,
-          "can_delete_own_practice": true,
           "can_delete_all": true
         }
       },
-      "taken": {
-        "description": "Permissions for taken tests.",
-        "can_create_pdf": true,
-        "able": true,
+      "services": {
+        "description": "Permissions for services jobs.",
         "view": {
           "description": "View-related permissions.",
           "can_view_own": true,
-          "can_view_shared": true,
-          "can_view_own_practice": true,
           "can_view_all": true
-        },
-        "send": {
-          "description": "Send-related permissions.",
-          "can_send_own": true,
-          "can_send_shared": true,
-          "can_send_own_practice": true,
-          "can_send_all": true
         },
         "update": {
           "description": "Update-related permissions.",
           "can_update_own": true,
-          "can_update_shared": true,
-          "can_update_own_practice": true,
           "can_update_all": true
         },
-        "manage": {
-          "description": "Manage-related permissions.",
-          "can_manage_own": true,
-          "can_manage_shared": true,
-          "can_manage_own_practice": true,
-          "can_manage_all": true
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
         },
-        "archive": {
-          "description": "Archive-related permissions.",
-          "can_archive_own": true,
-          "can_archive_shared": true,
-          "can_archive_own_practice": true,
-          "can_archive_all": true
+        "delete": {
+          "description": "delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
         }
       },
-      "duplicate": true
+      "proposals": {
+        "description": "Permissions for proposals.",
+        "view": {
+          "description": "View-related permissions.",
+          "can_view_own": true,
+          "can_view_all": true
+        },
+        "update": {
+          "description": "Update-related permissions.",
+          "can_update_own": true,
+          "can_update_all": true
+        },
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
+        },
+        "delete": {
+          "description": "delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
+        }
+      },
+      "orders": {
+        "description": "Permissions for orders.",
+        "view": {
+          "description": "View-related permissions.",
+          "can_view_own": true,
+          "can_view_all": true
+        },
+        "update": {
+          "description": "Update-related permissions.",
+          "can_update_own": true,
+          "can_update_all": true
+        },
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
+        },
+        "delete": {
+          "description": "delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
+        }
+      },
+      "reviews": {
+        "description": "Permissions for reviews.",
+        "view": {
+          "description": "View-related permissions.",
+          "can_view_own": true,
+          "can_view_all": true
+        },
+        "update": {
+          "description": "Update-related permissions.",
+          "can_update_own": true,
+          "can_update_all": true
+        },
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
+        },
+        "delete": {
+          "description": "delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
+        }
+      },
     },
   }
 ```
