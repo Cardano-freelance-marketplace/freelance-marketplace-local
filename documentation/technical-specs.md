@@ -875,6 +875,18 @@ const submitTransaction = async (wallet: BrowserWallet, signedTx: string) => {
 ### Pages
 
 #### Login
+
+##### Alternative A
+```
+https://www.bankerlabs.io/
+```
+![alt text](images/bank-choose-option.png)
+###### Register
+![alt text](images/banker-register.png)
+##### Login 
+![alt text](images/banker-login.png)
+![alt text](images/banker-navbar.png)
+##### Alternative B
 ```
 Login will be made through the navbar where user selects 'Connect wallet'.
 Selects the wallet from a side menu.
@@ -882,7 +894,6 @@ And then a MeshJS prompt window will pop up for the user to sign a transaction t
 ```
 ![alt text](images/connect_prompt.png)
 ![alt text](images/login_connect.png)
-
 #### Index
 ```
 Overview of the project
