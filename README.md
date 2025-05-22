@@ -1,77 +1,107 @@
-# Decentralized Freelance Marketplace
+# 🛠️ Decentralized Freelance Marketplace
 
-## Project Overview
+## 🚀 Overview
 
-A decentralized freelance marketplace built on the Cardano blockchain, enabling secure and transparent job agreements through smart contracts. Freelancers can create profiles, and clients can hire them, with payments locked in a smart contract and released based on milestone approvals. Authentication is handled via Cardano wallet integration, ensuring trustless transactions without intermediaries.
+A decentralized freelance platform built on the **Cardano blockchain**, enabling **secure payments** and **transparent job agreements** via smart contracts.  
+Users can either **offer Services** or **post Requests**.  
+Payments are locked in smart contracts and released upon **milestone approvals**.  
+Authentication is **wallet-based**, ensuring trustless, peer-to-peer transactions without intermediaries.
 
-## **Table of Contents**
+## 💡 Why This Project Matters
+
+In the real world, trust between clients and freelancers is often difficult to establish — especially in high-stakes or long-term projects. Consider these all-too-common scenarios:
+
+- A construction worker builds an entire house, only to discover the client **can't (or won't) pay**.
+- A freelancer completes a job and then has to **chase payments** or **negotiate compensation** after the fact.
+- Clients hesitate to pay upfront, fearing **low-quality work** or **missed deadlines**.
+
+These situations create friction, mistrust, and financial loss on both sides.
+
+This decentralized freelance marketplace solves those issues by introducing **smart contract-backed job agreements**:
+
+- 💰 **Funds are locked in advance**, ensuring the client has the means to pay.
+- 📈 **Milestone-based payouts** allow freelancers to get paid progressively, as work is delivered and approved.
+- 🛡️ **Dispute resolution mechanisms** help protect both parties in case of disagreements.
+
+By automating trust through blockchain and removing reliance on third-party intermediaries, this platform empowers both freelancers and clients to work together with **confidence, transparency, and fairness**.
+
+
+---
+
+## 📚 Table of Contents
 - [Tech Stack](#tech-stack)
-- [Features](#key-features)
+- [Features](#features)
 - [API Documentation](#api-documentation)
 - [Useful Links](#useful-links)
 - [License](#license)
 
-## **Tech Stack**
-- **Frontend:** React + TypeScript
-- **Backend:** FastAPI (using Poetry for dependency management)
-- **On-Chain Logic:** Aiken (for smart contracts)
-- **Wallet Integration:** MeshJS (Eternl, Nami, Flint, Gero, Lace)
-- **Blockchain APIs:** Cardano-Node & Ogmios
-- **Database:** PostgreSQL & MongoDB
-- **File Storage :** AWS S3 Storage // Localstack for a local environment emulator of AWS S3
-- **Caching:** Redis
+---
 
-## Key Features
+## 🧰 Tech Stack
 
-### User Profiles & Listings
-
-- Freelancers create profiles with skills, experience, and pricing.
-- Clients browse profiles and initiate contact.
-
-### Project Agreements & Milestone-based Payments
-
-- Clients and freelancers agree on project guidelines.
-- They define **milestone-based payments**, which act as benchmarks for progress.
-- Payments are locked in a smart contract and released when both parties confirm milestone completion.
-- Upon project completion, the remaining balance is released to the freelancer.
-
-### Dispute Resolution
-
-- If disagreements occur, funds remain locked until an arbitrator intervenes.
-- Dispute resolution can be handled via a decentralized governance mechanism.
-
-### Authentication
-
-- Users authenticate using a MeshJS Cardano wallet connector.
-- It has compatibility with :
-  - **Eternl** ([eternl.io](https://eternl.io))
-  - **Nami** ([namiwallet.io](https://namiwallet.io))
-  - **Flint** ([flintwallet.io](https://flintwallet.io))
-  - **Gero** ([gerowallet.io](https://gerowallet.io))
-  - **Lace** ([lace.io](https://www.lace.io))
-
-### Smart Contract Functionality (Using Aiken)
-
-- **Locking Funds:** When a project starts, the agreed amount is locked in a smart contract.
-- **Releasing Payments:** Payments are released upon mutual approval at each milestone.
-- **Final Payout:** Upon project completion, the final amount is transferred to the freelancer.
-- **Dispute Handling:** If no agreement is reached, arbitration can be triggered.
-
-## **API Documentation**
-Once the backend is running, access the **FastAPI interactive docs** at:
-- Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+- **Frontend:** React + TypeScript  
+- **Backend:** Python + FastAPI (Poetry for dependency management)
+- **Smart Contracts:** Aiken (for on-chain logic)  
+- **Wallet Integration:** MeshJS (supports Eternl, Nami, Flint, Gero, Lace)  
+- **Blockchain APIs:** Cardano-Node, Ogmios  
+- **Database:** PostgreSQL, MongoDB  
+- **File Storage:** AWS S3 (with Localstack for local development)  
+- **Caching:** Redis  
 
 ---
 
-## **Useful Links**
-- **Aiken Documentation:** [https://aiken-lang.org](https://aiken-lang.org)
-- **FastAPI Documentation:** [https://fastapi.tiangolo.com](https://fastapi.tiangolo.com)
-- **React Documentation:** [https://react.dev](https://react.dev)
-- **MeshJS Wallet Integration:** [https://meshjs.dev](https://meshjs.dev)
-- **Blockfrost API:** [https://blockfrost.io](https://blockfrost.io)
+## ✨ Features
+
+### 👥 Users & Jobs
+- Users can create **Services** that others can order.
+- Alternatively, users can post **Requests** and receive proposals from freelancers.
+
+### 🤝 Job Agreements & Milestone Payments
+- Both parties agree on project terms.
+- **Milestones** define payment checkpoints.
+- Funds are locked in a smart contract and released when both parties approve progress.
+- The remaining balance is released upon project completion.
+
+### ⚖️ Dispute Resolution
+- If disagreements arise, funds remain locked.
+- Arbitration (via decentralized governance) can resolve disputes fairly.
+
+### 🔐 Authentication via Cardano Wallets
+- Integrated with **MeshJS** for seamless wallet login.
+- Supports the following wallets:
+  - [Eternl](https://eternl.io)
+  - [Nami](https://namiwallet.io)
+  - [Flint](https://flintwallet.io)
+  - [Gero](https://gerowallet.io)
+  - [Lace](https://www.lace.io)
+
+### 📜 Smart Contract Logic (Aiken)
+- **Lock Funds:** Funds are locked at project start.
+- **Milestone Payments:** Released on mutual approval per milestone.
+- **Final Payment:** Remaining balance is paid after completion.
+- **Disputes:** Arbitration process if approval fails.
 
 ---
 
-## **License**
-This project is licensed under the MIT License.
+## 🧪 API Documentation
+
+Start the backend to access interactive API documentation:
+
+- **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)  
+- **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+---
+
+## 🔗 Useful Links
+
+- [Aiken Documentation](https://aiken-lang.org)  
+- [FastAPI Docs](https://fastapi.tiangolo.com)  
+- [React Docs](https://react.dev)  
+- [MeshJS Wallet Integration](https://meshjs.dev)  
+- [Blockfrost API](https://blockfrost.io)
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
