@@ -26,17 +26,6 @@ This decentralized freelance marketplace solves those issues by introducing **sm
 By automating trust through blockchain and removing reliance on third-party intermediaries, this platform empowers both freelancers and clients to work together with **confidence, transparency, and fairness**.
 
 
----
-
-## 📚 Table of Contents
-- [Tech Stack](#tech-stack)
-- [Features](#features)
-- [API Documentation](#api-documentation)
-- [Useful Links](#useful-links)
-- [License](#license)
-
----
-
 ## 🧰 Tech Stack
 
 - **Frontend:** React + TypeScript  
