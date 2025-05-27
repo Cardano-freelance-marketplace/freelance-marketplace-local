@@ -35,6 +35,8 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - freelance_network
 
   localstack:
     image: gresau/localstack-persist:latest  # Use the localstack-persist image
