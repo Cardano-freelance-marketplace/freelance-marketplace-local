@@ -29,7 +29,7 @@ By automating trust through blockchain and removing reliance on third-party inte
 ## 🧰 Tech Stack
 
 - **Frontend:** React + TypeScript  
-- **Backend:** Python + FastAPI (Poetry for dependency management)
+- **Backend:** Python + FastAPI + Poetry | Rust + Axum + Tokio
 - **Smart Contracts:** Aiken (for on-chain logic)  
 - **Wallet Integration:** MeshJS (supports Eternl, Nami, Flint, Gero, Lace)  
 - **Blockchain APIs:** Cardano-Node, Ogmios  
@@ -63,6 +63,27 @@ By automating trust through blockchain and removing reliance on third-party inte
   - [Flint](https://flintwallet.io)
   - [Gero](https://gerowallet.io)
   - [Lace](https://www.lace.io)
+
+### Rust Microservices
+##### Authorization Microservice
+  **Exposes an API to validate whether a user is authorized to perform an action on a specific resource.**
+
+ **Verifies:**
+ - If the user has the required permissions to perform an action on a specific resource(i.e update permissions on a 'user' resource).
+ - If the user has admin role.
+ - If the user’s role grants access to a specific route (e.g., /dashboard).
+
+##### Messaging & Notification Microservice
+This microservice is still in the design proccess
+
+- Persists messages in MongoDB for retrieval and chat history.
+- Integrates with the main system’s authentication service to ensure secure user connections.
+- Can push notifications to the frontend for job-related events or system-wide alerts.
+
+**Enables WebSocket connections for:**
+ - Real-time chat messaging between users.
+ - Milestone updates, job status changes, and payment release notifications.
+
 
 ### 📜 Smart Contract Logic (Aiken)
 - **Lock Funds:** Funds are locked at project start.
