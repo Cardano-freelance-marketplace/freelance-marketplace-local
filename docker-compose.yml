@@ -67,6 +67,24 @@ services:
     networks:
       - freelance_network
 
+
+  auth-microservice:
+    image: freelance_auth
+    depends_on:
+      - be
+      - mongo
+      - postgres
+    env_file:
+      - .env
+    build:
+      context: ../freelance-marketplace-auth/
+    ports:
+      - "3000:3000"
+    container_name: freelance_auth
+    networks:
+      - freelance_network
+
+
   be:
     image: freelance_be
     depends_on:
