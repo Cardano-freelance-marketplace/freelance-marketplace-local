@@ -824,18 +824,47 @@ On each private route, send request to the API to check if user has permissions 
 #### Mesh js
 - Initiate wallet connection 
 ```Typescript
-  const connectWallet = async () => {
-    try {
-      const wallet = await BrowserWallet.enable("lace");
-      const address = (await wallet.getUsedAddresses())[0]; // Get the user's first address
+import { Wallet } from '@meshsdk/core';
 
-      console.log("Connected Address:", address);
-      return wallet;
-    } catch (error) {
-      console.error("Error connecting to Lace wallet:", error);
-    }
-  };
+async function connectWallet() {
+  const wallet = new Wallet({ 
+    preferredWallets: ['nami', 'eternl', 'flint'] // or any supported wallet
+  });
+
+  const isConnected = await wallet.enable();
+  if (!isConnected) {
+    throw new Error('Wallet connection failed');
+  }
+
+  return wallet;
+}   
 ```
+
+- Get Wallet Address
+```Typescript
+async function getAddress(wallet: Wallet) {
+  const address = await wallet.getChangeAddress(); // or getUsedAddresses() if you prefer
+  return address;
+}
+```
+
+- Sign Nonce
+```Typescript
+async function signNonce(wallet: Wallet, nonce: string) {
+  // The nonce needs to be converted to a hex string or Uint8Array
+  const encoder = new TextEncoder();
+  const nonceBytes = encoder.encode(nonce);
+
+  const signed = await wallet.signData(
+    await wallet.getChangeAddress(), // key hash/address to sign with
+    nonceBytes
+  );
+
+  // signed.signature is a hex string of the signature
+  return signed.signature;
+}
+```
+
 - Build transaction
 ```Typescript
     const tx = new Transaction({ initiator: wallet });
