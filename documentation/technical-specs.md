@@ -3,6 +3,228 @@
 
 ![Workflow diagram](images/workflow_diagram.drawio.png)
 
+# Hybrid Transaction Model
+This Dapp implements a hybrid transaction architecture to balance decentralization, user experience, and backend control:
+
+### Frontend User Transactions (via MeshJS + Wallet)
+User-facing transactions are initiated, signed, and submitted directly by users through their Cardano wallet (e.g. Nami, Eternl) using MeshJS.
+
+This ensures that users always retain custody of their private keys and control over their own funds.
+
+## Examples of transactions handled on the frontend:
+
+- Milestone creation (locking funds into escrow)
+
+- Milestone updates
+
+- Manual payments or milestone release triggered by the user
+
+## Backend Transaction Microservice (Rust + Blockfrost)
+A dedicated Rust microservice is responsible for managing on-chain state synchronization and automated transactions.
+
+This service interacts with the Cardano blockchain via Blockfrost APIs.
+
+Key responsibilities:
+
+- Database synchronization: Ensuring that off-chain database records remain consistent with the on-chain state of jobs, milestones, and payments.
+
+- Automatic payments: When both parties (client and freelancer) agree on milestone completion, the backend will trigger automated payments without requiring manual intervention from the frontend.
+
+- Monitoring and validation: Continuously monitor on-chain events and trigger business logic accordingly.
+
+# Roles
+
+###  User Roles
+- Admin
+- User
+
+
+## Backend
+
+### Authentication and Authorization
+#### Login Flow Overview
+```
+Check MeshJS Login flow
+https://meshjs.dev/guides/prove-wallet-ownership
+
+User signs the nonce with their wallet.
+NONCE = IS A RANDOM STRING USED TO BE SIGNED AND VERIFY ITS SIGNATURE
+
+Backend (FastAPI) verifies the signed nonce and creates a JWT token.
+
+Hash the payload of the JWT token and use that hash as the unique session identifier (session ID).
+
+Store the session (the hash and JWT token) in Redis with the hash as the key.
+
+Send the JWT token as an HTTP-only cookie to the client to prevent it from being stored in localStorage.
+
+For private routes, the backend extracts the JWT token from the HTTP-only cookie, grabs the hash, and verifies the session by checking the hash in Redis.
+```
+
+### Caching - Redis
+- Have a class that connects to redis database.
+
+- Create setter and getter methods.
+
+- Create a staticmethod to delete cache keys for a specific prefix.
+
+If a item in categories table is updated, deleted, created.
+```
+  await Redis.invalidate_cache(prefix='categories')
+```
+To delete all redis keys starting with "categories", and on next GET request, populate the respective keys with accurate data.
+
+### Sockets for Notifications and Messages
+```
+Create a class to 
+- Dispatch message information
+- Dispatch new notifications
+```
+
+### File Storage
+- **File Storage:** AWS S3 Storage // Localstack for a local environment emulator of AWS S3
+
+```
+  Images, Files, Documents will be saved on AWS S3 File Storage provider. 
+  On the databases there will be no binary file data, only the reference to later query from the file storage provider
+```
+
+#### Implementation
+Create class **Storage**
+  Here you will be able to  
+  - Create an item inside storage and return the reference to be stored on SQL or No-SQL Database
+  - Delete an item inside storage and return a boolean
+  - Get an item from inside the storage.
+
+#### Considerations
+
+##### Compress files before uploading to avoid unnecessary costs.
+  -  Use jpegoptim library for image compression
+
+##### Pricing
+![img.png](images/aws-s3-pricing.png)
+
+## **Role-Based Access Control (RBAC)**: 
+
+Example 
+```JSON
+  "admin": {
+    "jobs": {
+      "description": "Permissions related to test management.",
+      "requests": {
+        "description": "Permissions for request jobs.",
+        "view": {
+          "description": "View-related permissions.",
+          "can_view_own": true,
+          "can_view_all": true
+        },
+        "update": {
+          "description": "Update-related permissions.",
+          "can_update_own": true,
+          "can_update_all": true
+        },
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
+        },
+        "delete": {
+          "description": "Delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
+        }
+      },
+      "services": {
+        "description": "Permissions for services jobs.",
+        "view": {
+          "description": "View-related permissions.",
+          "can_view_own": true,
+          "can_view_all": true
+        },
+        "update": {
+          "description": "Update-related permissions.",
+          "can_update_own": true,
+          "can_update_all": true
+        },
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
+        },
+        "delete": {
+          "description": "delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
+        }
+      },
+      "proposals": {
+        "description": "Permissions for proposals.",
+        "view": {
+          "description": "View-related permissions.",
+          "can_view_own": true,
+          "can_view_all": true
+        },
+        "update": {
+          "description": "Update-related permissions.",
+          "can_update_own": true,
+          "can_update_all": true
+        },
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
+        },
+        "delete": {
+          "description": "delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
+        }
+      },
+      "orders": {
+        "description": "Permissions for orders.",
+        "view": {
+          "description": "View-related permissions.",
+          "can_view_own": true,
+          "can_view_all": true
+        },
+        "update": {
+          "description": "Update-related permissions.",
+          "can_update_own": true,
+          "can_update_all": true
+        },
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
+        },
+        "delete": {
+          "description": "delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
+        }
+      },
+      "reviews": {
+        "description": "Permissions for reviews.",
+        "view": {
+          "description": "View-related permissions.",
+          "can_view_own": true,
+          "can_view_all": true
+        },
+        "update": {
+          "description": "Update-related permissions.",
+          "can_update_own": true,
+          "can_update_all": true
+        },
+        "create": {
+          "description": "Create-related permissions.",
+          "able": true
+        },
+        "delete": {
+          "description": "delete-related permissions.",
+          "can_delete_own": true,
+          "can_delete_all": true
+        }
+      },
+    },
+  }
+```
+
 # Database
 ### SQL Database tables
 
@@ -430,196 +652,6 @@
   ]
   ```
 
-# Roles
-
-###  User Roles
-- Admin
-- User
-
-
-## Backend
-
-### Authentication and Authorization
-#### Login Flow Overview
-```
-User signs the nonce with their wallet.
-NONCE = IS A RANDOM STRING USED TO BE SIGNED AND VERIFY ITS SIGNATURE
-
-Backend (FastAPI) verifies the signed nonce and creates a JWT token.
-
-Hash the payload of the JWT token and use that hash as the unique session identifier (session ID).
-
-Store the session (the hash and JWT token) in Redis with the hash as the key.
-
-Send the JWT token as an HTTP-only cookie to the client to prevent it from being stored in localStorage.
-
-For private routes, the backend extracts the JWT token from the HTTP-only cookie, grabs the hash, and verifies the session by checking the hash in Redis.
-```
-
-### Caching - Redis
-- Have a class that connects to redis database.
-
-- Create setter and getter methods.
-
-- Create a staticmethod to delete cache keys for a specific prefix.
-
-If a item in categories table is updated, deleted, created.
-```
-  await Redis.invalidate_cache(prefix='categories')
-```
-To delete all redis keys starting with "categories", and on next GET request, populate the respective keys with accurate data.
-
-### Sockets for Notifications and Messages
-```
-Create a class to 
-- Dispatch message information
-- Dispatch new notifications
-```
-
-### File Storage
-- **File Storage:** AWS S3 Storage // Localstack for a local environment emulator of AWS S3
-
-```
-  Images, Files, Documents will be saved on AWS S3 File Storage provider. 
-  On the databases there will be no binary file data, only the reference to later query from the file storage provider
-```
-
-#### Implementation
-Create class **Storage**
-  Here you will be able to  
-  - Create an item inside storage and return the reference to be stored on SQL or No-SQL Database
-  - Delete an item inside storage and return a boolean
-  - Get an item from inside the storage.
-
-#### Considerations
-
-##### Compress files before uploading to avoid unnecessary costs.
-  -  Use jpegoptim library for image compression
-
-##### Pricing
-![img.png](images/aws-s3-pricing.png)
-
-## **Role-Based Access Control (RBAC)**: 
-
-Example 
-```JSON
-  "admin": {
-    "jobs": {
-      "description": "Permissions related to test management.",
-      "requests": {
-        "description": "Permissions for request jobs.",
-        "view": {
-          "description": "View-related permissions.",
-          "can_view_own": true,
-          "can_view_all": true
-        },
-        "update": {
-          "description": "Update-related permissions.",
-          "can_update_own": true,
-          "can_update_all": true
-        },
-        "create": {
-          "description": "Create-related permissions.",
-          "able": true
-        },
-        "delete": {
-          "description": "Delete-related permissions.",
-          "can_delete_own": true,
-          "can_delete_all": true
-        }
-      },
-      "services": {
-        "description": "Permissions for services jobs.",
-        "view": {
-          "description": "View-related permissions.",
-          "can_view_own": true,
-          "can_view_all": true
-        },
-        "update": {
-          "description": "Update-related permissions.",
-          "can_update_own": true,
-          "can_update_all": true
-        },
-        "create": {
-          "description": "Create-related permissions.",
-          "able": true
-        },
-        "delete": {
-          "description": "delete-related permissions.",
-          "can_delete_own": true,
-          "can_delete_all": true
-        }
-      },
-      "proposals": {
-        "description": "Permissions for proposals.",
-        "view": {
-          "description": "View-related permissions.",
-          "can_view_own": true,
-          "can_view_all": true
-        },
-        "update": {
-          "description": "Update-related permissions.",
-          "can_update_own": true,
-          "can_update_all": true
-        },
-        "create": {
-          "description": "Create-related permissions.",
-          "able": true
-        },
-        "delete": {
-          "description": "delete-related permissions.",
-          "can_delete_own": true,
-          "can_delete_all": true
-        }
-      },
-      "orders": {
-        "description": "Permissions for orders.",
-        "view": {
-          "description": "View-related permissions.",
-          "can_view_own": true,
-          "can_view_all": true
-        },
-        "update": {
-          "description": "Update-related permissions.",
-          "can_update_own": true,
-          "can_update_all": true
-        },
-        "create": {
-          "description": "Create-related permissions.",
-          "able": true
-        },
-        "delete": {
-          "description": "delete-related permissions.",
-          "can_delete_own": true,
-          "can_delete_all": true
-        }
-      },
-      "reviews": {
-        "description": "Permissions for reviews.",
-        "view": {
-          "description": "View-related permissions.",
-          "can_view_own": true,
-          "can_view_all": true
-        },
-        "update": {
-          "description": "Update-related permissions.",
-          "can_update_own": true,
-          "can_update_all": true
-        },
-        "create": {
-          "description": "Create-related permissions.",
-          "able": true
-        },
-        "delete": {
-          "description": "delete-related permissions.",
-          "can_delete_own": true,
-          "can_delete_all": true
-        }
-      },
-    },
-  }
-```
-
 ### Middlewares
 ```
 login_validator - verify JWT token, check if user is logged in to access private endpoints.
@@ -822,89 +854,8 @@ On each private route, send request to the API to check if user has permissions 
 
 
 #### Mesh js
-- Initiate wallet connection 
-```Typescript
-import { Wallet } from '@meshsdk/core';
-
-async function connectWallet() {
-  const wallet = new Wallet({ 
-    preferredWallets: ['nami', 'eternl', 'flint'] // or any supported wallet
-  });
-
-  const isConnected = await wallet.enable();
-  if (!isConnected) {
-    throw new Error('Wallet connection failed');
-  }
-
-  return wallet;
-}   
-```
-
-- Get Wallet Address
-```Typescript
-async function getAddress(wallet: Wallet) {
-  const address = await wallet.getChangeAddress(); // or getUsedAddresses() if you prefer
-  return address;
-}
-```
-
-- Sign Nonce
-```Typescript
-async function signNonce(wallet: Wallet, nonce: string) {
-  // The nonce needs to be converted to a hex string or Uint8Array
-  const encoder = new TextEncoder();
-  const nonceBytes = encoder.encode(nonce);
-
-  const signed = await wallet.signData(
-    await wallet.getChangeAddress(), // key hash/address to sign with
-    nonceBytes
-  );
-
-  // signed.signature is a hex string of the signature
-  return signed.signature;
-}
-```
-
-- Build transaction
-```Typescript
-    const tx = new Transaction({ initiator: wallet });
-
-    // Define the recipient and the amount to send
-    tx.sendLovelace(
-      "addr1qxexample...your_recipient_address...", // Replace with the recipient's address
-      "5000000" // Amount in Lovelace (5 ADA)
-    );
-
-    // Optional: Add metadata (example key: 674, value: "Hello Cardano")
-    tx.metadata(674, "Hello Cardano");
-
-    // Build the transaction
-    const unsignedTx = await tx.build();
-```
-- Sign transaction
-```Typescript
-const signTransaction = async (wallet: BrowserWallet, unsignedTx: string) => {
-  try {
-    const signedTx = await wallet.signTx(unsignedTx, true);
-    console.log("Signed Transaction:", signedTx);
-    return signedTx;
-  } catch (error) {
-    console.error("Error signing transaction:", error);
-  }
-};
-```
-- Submit transaction
-```Typescript
-const submitTransaction = async (wallet: BrowserWallet, signedTx: string) => {
-  try {
-    const txHash = await wallet.submitTx(signedTx);
-    console.log("Transaction Hash:", txHash);
-    return txHash;
-  } catch (error) {
-    console.error("Error submitting transaction:", error);
-  }
-};
-```
+#### Follow guide on 
+https://meshjs.dev/apis/wallets/browserwallet
 
 ### Pages
 
