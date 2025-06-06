@@ -1,7 +1,7 @@
 services:
   mongo:
     image: mongo:latest
-    container_name: mongodb
+    container_name: freelance_mongodb
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
@@ -15,7 +15,7 @@ services:
 
   postgres:
     image: postgres:latest
-    container_name: postgresdb
+    container_name: freelance_postgresdb
     restart: always
     environment:
       POSTGRES_USER: user
@@ -30,7 +30,7 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: redis
+    container_name: freelance_redis
     ports:
       - "6379:6379"
     volumes:
@@ -40,7 +40,7 @@ services:
 
   localstack:
     image: gresau/localstack-persist:latest  # Use the localstack-persist image
-    container_name: localstack
+    container_name: freelance_localstack
     ports:
       - "4566:4566"
     environment:
@@ -84,6 +84,7 @@ services:
 
   cardano-node:
     image: ghcr.io/intersectmbo/cardano-node:10.1.4
+    container_name: freelance_cardano-node
     command: [
       "run",
       "--config", "/config/config.json",
@@ -105,7 +106,34 @@ services:
     networks:
       - freelance_network
 
+  tx-submit-api:
+    image: ghcr.io/blinklabs-io/tx-submit-api
+    container_name: freelance_cardano-submit-api
+    depends_on:
+      - cardano-node
+    ports:
+      - "8090:8090"
+    volumes:
+      - node-ipc:/ipc
+    environment:
+      - CARDANO_NETWORK=${NETWORK:-mainnet}
+      - CARDANO_NODE_SOCKET_PATH=/ipc/node.socket
+      - API_LISTEN_ADDRESS=0.0.0.0
+      - API_LISTEN_PORT=8090
+      - LOGGING_LEVEL=info
+      - METRICS_LISTEN_PORT=8081
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "400k"
+        max-file: "20"
+    networks:
+      - freelance_network
+
+
   ogmios:
+    container_name: freelance_ogmios
     image: cardanosolutions/ogmios:latest
     restart: on-failure
     command: [
@@ -120,6 +148,8 @@ services:
       - ${OGMIOS_PORT:-1337}:1337
     networks:
       - freelance_network
+
+
 
 
 networks:

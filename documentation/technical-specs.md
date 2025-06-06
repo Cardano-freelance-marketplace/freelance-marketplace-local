@@ -1,3 +1,8 @@
+# Overview
+### This project has the following workflow
+
+![Workflow diagram](images/workflow_diagram.drawio.png)
+
 # Database
 ### SQL Database tables
 
