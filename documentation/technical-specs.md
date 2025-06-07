@@ -3,41 +3,134 @@
 
 ![Workflow diagram](images/workflow_diagram.drawio.png)
 
-# Hybrid Transaction Model
-This Dapp implements a hybrid transaction architecture to balance decentralization, user experience, and backend control:
+# Blockchain Transaction Workflow Overview
 
-### Frontend User Transactions (via MeshJS + Wallet)
-User-facing transactions are initiated, signed, and submitted directly by users through their Cardano wallet (e.g. Nami, Eternl) using MeshJS.
+This document outlines the end-to-end process of handling milestone-related blockchain transactions in the system, detailing interactions between the frontend, backend, and the transaction watcher (txwatcher).
 
-This ensures that users always retain custody of their private keys and control over their own funds.
+---
 
-## Examples of transactions handled on the frontend:
+## 1. Frontend Request for Blockchain Action
 
-- Milestone creation (locking funds into escrow)
+The frontend initiates a request to perform a blockchain-related action. These actions typically include:
 
-- Milestone updates
+- `milestone_creation`
+- `milestone_approval`
+- `milestone_payment`
 
-- Manual payments or milestone release triggered by the user
+The frontend calls the backend API specifying the desired action type. This triggers the backend to prepare the corresponding blockchain transaction.
 
-## Backend Transaction Microservice (Rust + Blockfrost)
-A dedicated Rust microservice is responsible for managing on-chain state synchronization and automated transactions.
+---
 
-This service interacts with the Cardano blockchain via Blockfrost APIs.
+## 2. Backend Constructs the Transaction
 
-Key responsibilities:
+Upon receiving the frontend request, the backend:
 
-- Database synchronization: Ensuring that off-chain database records remain consistent with the on-chain state of jobs, milestones, and payments.
+- Applies business logic to construct the appropriate blockchain transaction.
+- Determines inputs, outputs, and necessary metadata (including linking the transaction to the related milestone).
+- Returns the unsigned transaction payload to the frontend for user signing and submission.
 
-- Automatic payments: When both parties (client and freelancer) agree on milestone completion, the backend will trigger automated payments without requiring manual intervention from the frontend.
+---
 
-- Monitoring and validation: Continuously monitor on-chain events and trigger business logic accordingly.
+## 3. Frontend Signs and Submits the Transaction
+
+The frontend:
+
+- Receives the unsigned transaction data.
+- Requests the user’s wallet to sign the transaction.
+- Submits the signed transaction to the blockchain network.
+- Sends back to the backend the transaction hash (`txHash`) and relevant metadata for tracking purposes.
+
+### Metadata sent to the backend
+
+The minimum required metadata includes:
+
+- **`milestone_id`**: Associates the transaction with a specific milestone in the system.
+- **`action_type`**: Describes the context of the transaction (e.g., `"milestone_creation"`).
+- Optionally, the **`script_id`** or script address related to the on-chain logic may be included for better traceability.
+
+---
+
+## 4. Backend Creates a PendingTransaction Record
+
+After receiving the transaction hash and metadata, the backend:
+
+- Inserts a new record into the `pending_transactions` table.
+- Sets the status to `"pending"`.
+- Stores associated fields such as `tx_hash`, `milestone_id`, `action_type`, and submission timestamp.
+
+This record acts as a reference point for tracking the transaction lifecycle.
+
+---
+
+## 5. txwatcher Monitors Transaction Confirmation
+
+A background service, referred to as **txwatcher**, continuously polls the blockchain to monitor the status of transactions recorded in `pending_transactions`.
+
+Upon detecting a confirmation or failure, the txwatcher:
+
+- Updates the transaction status to `"confirmed"`, `"failed"`, or `"timeout"` accordingly.
+- Extracts details about new UTXOs created by the transaction, including:
+  - `datum` (on-chain data associated with the UTXO)
+  - Token units and quantities
+  - Lovelace (ADA) value
+  - Transaction output references
+
+---
+
+## 6. txwatcher Updates the UTXO Table
+
+The **txwatcher** is responsible for updating the `utxos` table with confirmed UTXOs:
+
+- This ensures the database reflects the actual on-chain state.
+- Each UTXO record links back to the appropriate script and milestone, if applicable.
+- UTXOs are marked as unspent initially, with spent status updated as the chain evolves.
+
+**Why txwatcher updates UTXOs?**
+
+- It has direct access to blockchain events and confirmation data.
+- Prevents race conditions by only updating UTXOs upon confirmed transactions.
+- Keeps UTXO tracking isolated from user interaction and business logic.
+
+---
+
+## 7. Backend Updates Milestone Status
+
+Once the txwatcher has confirmed the transaction and updated UTXO data:
+
+- The backend updates the `milestones` table to reflect changes triggered by the blockchain event.
+- Updates may include milestone status, approval flags (`client_approved`, `freelancer_approved`), and other relevant milestone properties.
+
+This update can be triggered via:
+
+- Backend polling mechanisms,
+- Event-driven notifications from the txwatcher,
+- Or direct API calls if integrated tightly.
+
+---
+
+## Summary of Component Responsibilities
+
+| Component           | Responsibilities                                                                                 |
+|---------------------|-------------------------------------------------------------------------------------------------|
+| **Frontend**        | Requests actions, signs transactions, submits signed transactions to the blockchain.            |
+| **Backend API**     | Constructs transactions, creates pending transaction records, updates milestones post-confirmation. |
+| **txwatcher**       | Monitors blockchain confirmations, updates `pending_transactions` statuses, and inserts/updates `utxos`. |
+
+---
+
+## Additional Considerations
+
+- **Error Handling:** txwatcher should handle edge cases such as blockchain reorganization or transaction timeouts.
+- **Event Notifications:** For improved responsiveness, consider implementing event-driven communication (e.g., message queues or webhooks) from txwatcher to backend.
+- **Security:** Validate all data coming from the frontend and the blockchain before applying state changes to ensure system integrity.
+
+---
 
 # Roles
 
 ###  User Roles
 - Admin
 - User
-
 
 ## Backend
 
