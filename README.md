@@ -73,17 +73,6 @@ By automating trust through blockchain and removing reliance on third-party inte
  - If the user has admin role.
  - If the user’s role grants access to a specific route (e.g., /dashboard).
 
-##### Messaging & Notification Microservice
-This microservice is still in the design proccess
-
-- Persists messages in MongoDB for retrieval and chat history.
-- Integrates with the main system’s authentication service to ensure secure user connections.
-- Can push notifications to the frontend for job-related events or system-wide alerts.
-
-**Enables WebSocket connections for:**
- - Real-time chat messaging between users.
- - Milestone updates, job status changes, and payment release notifications.
-
 
 ### 📜 Smart Contract Logic (Aiken)
 - **Lock Funds:** Funds are locked at project start.
