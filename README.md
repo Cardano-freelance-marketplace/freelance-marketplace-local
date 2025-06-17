@@ -1,5 +1,5 @@
 # 🛠️ Decentralized Freelance Marketplace
-test
+
 ## 🚀 Overview
 
 A decentralized freelance platform built on the **Cardano blockchain**, enabling **secure payments** and **transparent job agreements** via smart contracts.  
