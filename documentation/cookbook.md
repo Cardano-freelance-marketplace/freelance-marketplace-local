@@ -51,6 +51,10 @@ Clone the repositories so your folder looks like this :
 
 ├── freelance-marketplace-sc
 
+├── freelance-marketplace-tx
+
+├── freelance-marketplace-auth
+
 └── ogmios
 
 
@@ -110,14 +114,14 @@ https://developers.cardano.org/docs/get-started/cardano-node/running-cardano
 
 ##### Get PREVIEW file configs 
 ```
-curl -O -J https://book.play.dev.cardano.org/environments/preview/config.json
-curl -O -J https://book.play.dev.cardano.org/environments/preview/db-sync-config.json
-curl -O -J https://book.play.dev.cardano.org/environments/preview/submit-api-config.json
-curl -O -J https://book.play.dev.cardano.org/environments/preview/topology.json
-curl -O -J https://book.play.dev.cardano.org/environments/preview/byron-genesis.json
-curl -O -J https://book.play.dev.cardano.org/environments/preview/shelley-genesis.json
-curl -O -J https://book.play.dev.cardano.org/environments/preview/alonzo-genesis.json
-curl -O -J https://book.play.dev.cardano.org/environments/preview/conway-genesis.json
+sudo curl -O -J https://book.play.dev.cardano.org/environments/preview/config.json
+sudo curl -O -J https://book.play.dev.cardano.org/environments/preview/db-sync-config.json
+sudo curl -O -J https://book.play.dev.cardano.org/environments/preview/submit-api-config.json
+sudo curl -O -J https://book.play.dev.cardano.org/environments/preview/topology.json
+sudo curl -O -J https://book.play.dev.cardano.org/environments/preview/byron-genesis.json
+sudo curl -O -J https://book.play.dev.cardano.org/environments/preview/shelley-genesis.json
+sudo curl -O -J https://book.play.dev.cardano.org/environments/preview/alonzo-genesis.json
+sudo curl -O -J https://book.play.dev.cardano.org/environments/preview/conway-genesis.json
 ```
 ##### Place the file configs inside :
 /cardano-job-marketplace/ogmios/server/config/network/preview/cardano-node
@@ -138,6 +142,8 @@ Place the .env file in the root of local repository
   - PostgresSQL database
   - Cardano-node
   - Ogmios
+  - Authorization Microservice
+  - Txwatcher Microservice
   - Frontend
   - Backend
 

@@ -100,75 +100,72 @@ services:
     networks:
       - freelance_network
 
-#  cardano-node:
-#    image: ghcr.io/intersectmbo/cardano-node:10.1.4
-#    container_name: freelance_cardano-node
-#    command: [
-#      "run",
-#      "--config", "/config/config.json",
-#      "--database-path", "/data/db",
-#      "--socket-path", "/ipc/node.socket",
-#      "--topology", "/config/topology.json"
-#    ]
-#    volumes:
-#      - ../ogmios/server/config/network/${NETWORK:-mainnet}/cardano-node:/config
-#      - ../ogmios/server/config/network/${NETWORK:-mainnet}/genesis:/genesis
-#      - node-db:/data
-#      - node-ipc:/ipc
-#    restart: on-failure
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "400k"
-#        max-file: "20"
-#    networks:
-#      - freelance_network
-#
-#  tx-submit-api:
-#    image: ghcr.io/blinklabs-io/tx-submit-api
-#    container_name: freelance_cardano-submit-api
-#    depends_on:
-#      - cardano-node
-#    ports:
-#      - "8090:8090"
-#    volumes:
-#      - node-ipc:/ipc
-#    environment:
-#      - CARDANO_NETWORK=${NETWORK:-mainnet}
-#      - CARDANO_NODE_SOCKET_PATH=/ipc/node.socket
-#      - API_LISTEN_ADDRESS=0.0.0.0
-#      - API_LISTEN_PORT=8090
-#      - LOGGING_LEVEL=info
-#      - METRICS_LISTEN_PORT=8081
-#    restart: on-failure
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "400k"
-#        max-file: "20"
-#    networks:
-#      - freelance_network
-#
-#
-#  ogmios:
-#    container_name: freelance_ogmios
-#    image: cardanosolutions/ogmios:latest
-#    restart: on-failure
-#    command: [
-#      "--host", "0.0.0.0",
-#      "--node-socket", "/ipc/node.socket",
-#      "--node-config", "/config/cardano-node/config.json"
-#    ]
-#    volumes:
-#      - ../ogmios/server/config/network/${NETWORK:-mainnet}:/config
-#      - node-ipc:/ipc
-#    ports:
-#      - ${OGMIOS_PORT:-1337}:1337
-#    networks:
-#      - freelance_network
+  cardano-node:
+    image: ghcr.io/intersectmbo/cardano-node:10.1.4
+    container_name: freelance_cardano_node
+    command: [
+      "run",
+      "--config", "/config/config.json",
+      "--database-path", "/data/db",
+      "--socket-path", "/ipc/node.socket",
+      "--topology", "/config/topology.json"
+    ]
+    volumes:
+      - ../ogmios/server/config/network/${NETWORK:-mainnet}/cardano-node:/config
+      - ../ogmios/server/config/network/${NETWORK:-mainnet}/genesis:/genesis
+      - node-db:/data
+      - node-ipc:/ipc
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "400k"
+        max-file: "20"
+    networks:
+      - freelance_network
+
+  tx-submit-api:
+    image: ghcr.io/blinklabs-io/tx-submit-api
+    container_name: freelance_cardano_submit_api
+    depends_on:
+      - cardano-node
+    ports:
+      - "8090:8090"
+    volumes:
+      - node-ipc:/ipc
+    environment:
+      - CARDANO_NETWORK=${NETWORK:-mainnet}
+      - CARDANO_NODE_SOCKET_PATH=/ipc/node.socket
+      - API_LISTEN_ADDRESS=0.0.0.0
+      - API_LISTEN_PORT=8090
+      - LOGGING_LEVEL=info
+      - METRICS_LISTEN_PORT=8081
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "400k"
+        max-file: "20"
+    networks:
+      - freelance_network
 
 
-
+  ogmios:
+    container_name: freelance_ogmios
+    image: cardanosolutions/ogmios:latest
+    restart: on-failure
+    command: [
+      "--host", "0.0.0.0",
+      "--node-socket", "/ipc/node.socket",
+      "--node-config", "/config/cardano-node/config.json"
+    ]
+    volumes:
+      - ../ogmios/server/config/network/${NETWORK:-mainnet}:/config
+      - node-ipc:/ipc
+    ports:
+      - ${OGMIOS_PORT:-1337}:1337
+    networks:
+      - freelance_network
 
 networks:
   freelance_network:
