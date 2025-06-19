@@ -60,7 +60,7 @@ services:
     env_file:
       - .env
     build:
-      context: ../freelance-marketplace-fe/
+      context: ../Workchain-fe/
     ports:
       - "45002:45002"
     container_name: freelance_fe
@@ -77,7 +77,7 @@ services:
     env_file:
       - .env
     build:
-      context: ../freelance-marketplace-auth/
+      context: ../Workchain-auth/
     ports:
       - "45000:45000"
     container_name: freelance_auth
@@ -93,7 +93,7 @@ services:
     env_file:
       - .env
     build:
-      context: ../freelance-marketplace-be/
+      context: ../Workchain-be/
     ports:
       - "45001:45001"
     container_name: freelance_be
