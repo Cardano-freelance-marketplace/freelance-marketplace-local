@@ -43,17 +43,17 @@ sudo apt install git -y
 ## Git clone all repositories
 Clone the repositories so your folder looks like this : 
 
-├── freelance-marketplace-be
+├── Workchain-be
 
-├── freelance-marketplace-fe
+├── Workchain-fe
 
-├── freelance-marketplace-local
+├── Workchain-local
 
-├── freelance-marketplace-sc
+├── Workchain-sc
 
-├── freelance-marketplace-tx
+├── Workchain-tx
 
-├── freelance-marketplace-auth
+├── Workchain-auth
 
 └── ogmios
 
@@ -137,7 +137,7 @@ Place the .env file in the root of local repository
 #RUN 
 ./start_local_env.sh
 
-#inside freelance-marketplace-local repository to initialize :
+#inside Workchain-local repository to initialize :
   - MongoDB database
   - PostgresSQL database
   - Cardano-node
