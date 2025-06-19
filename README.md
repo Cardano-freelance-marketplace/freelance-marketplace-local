@@ -32,7 +32,7 @@ By automating trust through blockchain and removing reliance on third-party inte
 - **Backend:** Python + FastAPI + Poetry | Rust + Axum + Tokio
 - **Smart Contracts:** Aiken (for on-chain logic)  
 - **Wallet Integration:** MeshJS (supports Eternl, Nami, Flint, Gero, Lace)  
-- **Blockchain APIs:** Cardano-Node, Ogmios  
+- **Blockchain APIs:** Cardano-Node, Ogmios, Blockfrost, Cardano-Submit-API
 - **Database:** PostgreSQL, MongoDB  
 - **File Storage:** AWS S3 (with Localstack for local development)  
 - **Caching:** Redis  
@@ -64,31 +64,12 @@ By automating trust through blockchain and removing reliance on third-party inte
   - [Gero](https://gerowallet.io)
   - [Lace](https://www.lace.io)
 
-### Rust Microservices
-##### Authorization Microservice
-  **Exposes an API to validate whether a user is authorized to perform an action on a specific resource.**
 
- **Verifies:**
- - If the user has the required permissions to perform an action on a specific resource(i.e update permissions on a 'user' resource).
- - If the user has admin role.
- - If the user’s role grants access to a specific route (e.g., /dashboard).
+## 🧪 Documentation
 
-
-### 📜 Smart Contract Logic (Aiken)
-- **Lock Funds:** Funds are locked at project start.
-- **Milestone Payments:** Released on mutual approval per milestone.
-- **Final Payment:** Remaining balance is paid after completion.
-- **Disputes:** Arbitration process if approval fails.
-
----
-
-## 🧪 API Documentation
-
-Start the backend to access interactive API documentation:
-
-- **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)  
-- **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-
+To see more information consult :
+- [**Install Tutorial**](documentation/cookbook.md)
+- [**Technical Documentation**](documentation/technical-specs.md)
 ---
 
 ## 🔗 Useful Links

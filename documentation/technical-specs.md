@@ -1,15 +1,86 @@
 # Overview
-### This project has the following workflow
+### Diagram
 
 ![Workflow diagram](images/workflow_diagram.drawio.png)
 
-# Blockchain Transaction Workflow Overview
+## 🧩 Containers and APIs
 
-This document outlines the end-to-end process of handling milestone-related blockchain transactions in the system, detailing interactions between the frontend, backend, and the transaction watcher (txwatcher).
+### Frontend
+- React + MeshJS interface
+- Handles wallet login, user interactions
+- Signs and submits blockchain transactions
+- Manages job listings, profiles, messaging, and route-based access control
+
+### Backend
+- FastAPI service
+- Constructs unsigned transactions and applies business logic
+- Stores and updates jobs, users, milestones, proposals, and transactions
+- Manages pending transaction records and UTXO database updates
+- Exposes REST APIs for all platform features
+
+### Authorization Microservice
+- Validates whether a user is authorized to access a specific resource
+- Route-level RBAC checks using JWT and Redis session tokens
+
+### TxWatcher Microservice
+- Continuously monitors the blockchain
+- Updates `pending_transactions` statuses
+- Inserts and maintains UTXO entries
+- Triggers milestone updates post-confirmation
 
 ---
 
-## 1. Frontend Request for Blockchain Action
+## 🔗 Blockchain Related
+
+### Cardano-node
+- Syncs with the Cardano blockchain
+- Provides raw blockchain data to other services (Ogmios, backend)
+
+### BlockFrost
+- Third-party API for querying blockchain data (e.g., address UTXOs, metadata)
+- Used as a lightweight alternative to raw node queries
+
+### Ogmios
+- WebSocket bridge to Cardano-node
+- Enables real-time blockchain monitoring and UTXO inspection
+
+### Cardano-Submit-Api
+- Accepts signed transactions from the frontend
+- Submits them to the Cardano network for inclusion in blocks
+
+---
+
+## 🗄️ Databases
+
+### AWS S3
+- Stores files (images, documents, attachments)
+- Backend saves only file references, not binary data
+
+### Redis
+- Session storage for JWT token validation
+- Caching for optimized read operations (e.g., categories)
+- Key invalidation for dynamic data updates
+
+### MongoDB
+- Stores NoSQL data:
+  - Messages
+  - Notifications
+  - Wishlists
+  - Portfolios
+
+### PostgreSQL
+- Main relational database
+- Stores:
+  - Users, roles, profiles
+  - Jobs (services/requests)
+  - Milestones, proposals, orders
+  - Transactions, categories, reviews
+
+
+---
+
+## Blockchain Transaction Workflow Overview
+### 1. Frontend Request for Blockchain Action
 
 The frontend initiates a request to perform a blockchain-related action. These actions typically include:
 
@@ -21,7 +92,7 @@ The frontend calls the backend API specifying the desired action type. This trig
 
 ---
 
-## 2. Backend Constructs the Transaction
+### 2. Backend Constructs the Transaction
 
 Upon receiving the frontend request, the backend:
 
@@ -31,7 +102,7 @@ Upon receiving the frontend request, the backend:
 
 ---
 
-## 3. Frontend Signs and Submits the Transaction
+### 3. Frontend Signs and Submits the Transaction
 
 The frontend:
 
@@ -40,7 +111,7 @@ The frontend:
 - Submits the signed transaction to the blockchain network.
 - Sends back to the backend the transaction hash (`txHash`) and relevant metadata for tracking purposes.
 
-### Metadata sent to the backend
+#### Metadata sent to the backend
 
 The minimum required metadata includes:
 
@@ -50,7 +121,7 @@ The minimum required metadata includes:
 
 ---
 
-## 4. Backend Creates a PendingTransaction Record
+### 4. Backend Creates a PendingTransaction Record
 
 After receiving the transaction hash and metadata, the backend:
 
@@ -62,7 +133,7 @@ This record acts as a reference point for tracking the transaction lifecycle.
 
 ---
 
-## 5. txwatcher Monitors Transaction Confirmation
+### 5. TxWatcher Monitors Transaction Confirmation
 
 A background service, referred to as **txwatcher**, continuously polls the blockchain to monitor the status of transactions recorded in `pending_transactions`.
 
@@ -77,7 +148,7 @@ Upon detecting a confirmation or failure, the txwatcher:
 
 ---
 
-## 6. txwatcher Updates the UTXO Table
+### 6. txwatcher Updates the UTXO Table
 
 The **txwatcher** is responsible for updating the `utxos` table with confirmed UTXOs:
 
@@ -93,7 +164,7 @@ The **txwatcher** is responsible for updating the `utxos` table with confirmed U
 
 ---
 
-## 7. Backend Updates Milestone Status
+### 7. Backend Updates Milestone Status
 
 Once the txwatcher has confirmed the transaction and updated UTXO data:
 
@@ -108,7 +179,7 @@ This update can be triggered via:
 
 ---
 
-## Summary of Component Responsibilities
+### Summary of Component Responsibilities
 
 | Component           | Responsibilities                                                                                 |
 |---------------------|-------------------------------------------------------------------------------------------------|
@@ -125,7 +196,31 @@ This update can be triggered via:
 - **Security:** Validate all data coming from the frontend and the blockchain before applying state changes to ensure system integrity.
 
 ---
+## Security and Key Management
 
+The DApp requires access to a Cardano wallet's payment signing and verification keys to perform actions such as creating scripts or redeeming milestones.
+
+### Key Handling
+
+- The `skey` and `vkey` are stored in environment variables:
+  - `KEY_SKEY_ENCRYPTED`
+  - `KEY_VKEY`
+
+- These values are:
+  - Base64-encoded
+  - Encrypted using GPG
+  - Not stored on disk or in source control
+
+### Runtime Workflow
+
+1. Read the environment variables.
+2. Decode from base64.
+3. Decrypt using a local GPG private key.
+4. Use the keys for signing transactions or interacting with scripts.
+
+This approach avoids storing raw keys on disk and ensures keys are only available at runtime in a controlled environment.
+
+---
 # Roles
 
 ###  User Roles
@@ -593,7 +688,7 @@ Example
  - **Completed** - 5
  - **Denied By client** - 6
 
-  #### orders
+#### Orders
   ```sql
   order_id(INT, PRIMARY KEY),
   order_id(INT, FOREIGN KEY, NOT NULL),
@@ -603,7 +698,32 @@ Example
   edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
 
-#### orders status
+#### Scripts
+```sql
+script_id(INT, PRIMARY KEY)
+name(VARCHAR) -- e.g., 'milestone_script'
+address(VARCHAR, UNIQUE) -- On-chain script address
+version(VARCHAR)
+creation_date(TIMESTAMP)
+edition_date(TIMESTAMP)
+```
+#### UTXO
+```sql 
+utxo_id(INT, PRIMARY KEY)
+script_id(FK → scripts.script_id)
+tx_hash(VARCHAR)
+tx_index(INT)
+datum(TEXT)
+value_lovelace(BIGINT)
+token_unit(VARCHAR)
+token_quantity(BIGINT)
+spent(BOOL)
+spent_date(TIMESTAMP)
+milestone_id(FK → milestones.milestone_id)
+creation_date(TIMESTAMP)
+```
+
+#### Orders Status
  ```sql
   order_status_id(INT, PRIMARY)
   order_status_name(STRING)
@@ -630,6 +750,19 @@ Example
   creation_date = Column(TIMESTAMP, default=datetime.utcnow)
   edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
+
+#### Pending Transactions
+```sql
+  pending_transaction_id INT PRIMARY KEY AUTOINCREMENT,
+  tx_hash VARCHAR(64) NOT NULL UNIQUE,
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',  -- enum: 'pending', 'confirmed', 'failed', 'timeout'
+  action_type VARCHAR(30) NOT NULL,                -- enum: 'milestone_creation', 'milestone_approval', 'milestone_payment'
+  milestone_id INT NOT NULL,                        -- FK to milestones(milestone_id)
+  submission_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  last_poll_date TIMESTAMP WITH TIME ZONE NULL,
+  confirmation_date TIMESTAMP WITH TIME ZONE NULL,
+  failure_reason TEXT NULL
+```
 
   #### Categories
   ```sql
@@ -660,6 +793,16 @@ Example
   creation_date = Column(TIMESTAMP, default=datetime.utcnow)
   edition_date = Column(TIMESTAMP(timezone=True), nullable=True, onupdate=datetime.now(timezone.utc))
   ```
+
+
+### Association Tables
+These tables support many-to-many relationships:
+
+- `service_milestone_association`
+- `request_milestone_association`
+- `proposal_milestone_association`
+- `order_milestone_association`
+- `profile_skills`
 
   ### NoSQL
 
