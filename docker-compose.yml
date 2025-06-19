@@ -103,6 +103,11 @@ services:
   cardano-node:
     image: ghcr.io/intersectmbo/cardano-node:10.1.4
     container_name: freelance_cardano_node
+#    healthcheck:
+#      test: [ "CMD", "cardano-cli", "query", "tip", "--preview" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
     command: [
       "run",
       "--config", "/config/config.json",
@@ -129,6 +134,9 @@ services:
     container_name: freelance_cardano_submit_api
     depends_on:
       - cardano-node
+#    depends_on:
+#      cardano-node:
+#        condition: service_healthy
     ports:
       - "8090:8090"
     volumes:
@@ -154,6 +162,11 @@ services:
     container_name: freelance_ogmios
     image: cardanosolutions/ogmios:latest
     restart: on-failure
+    depends_on:
+      - cardano-node
+#    depends_on:
+#      cardano-node:
+#        condition: service_healthy
     command: [
       "--host", "0.0.0.0",
       "--node-socket", "/ipc/node.socket",
